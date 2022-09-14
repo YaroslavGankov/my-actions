@@ -43,7 +43,7 @@ jobs:
           
       - name: ls -la 1
         run: |
-          ls -la /test1
+          ls -la /test
           ls -la /test2
       
       - name: cat file1 and file 2
@@ -56,5 +56,5 @@ jobs:
         
       - name: ls -la 2
         run: |
-          ls -la /test1
+          ls -la /test
           ls -la /test2
