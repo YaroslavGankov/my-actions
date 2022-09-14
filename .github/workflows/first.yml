@@ -28,8 +28,10 @@ jobs:
       - name: cache-test1
         uses: actions/cache@v3
         with:
-          path: test
-          key: ${{ runner.os }}-ololo-${{ hashFiles('test/*') }}
+          path: |
+            test
+            test2
+          key: ${{ runner.os }}-ololo-${{ hashFiles('test/file3.txt') }}
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
@@ -49,8 +51,8 @@ jobs:
       
       - name: cat file1 and file 2
         run: |
-          cat test2/file1
-          cat test2/file2
+          cat test2/file1.txt
+          cat test2/file2.txt
         
       # - name: clone repo
       #   uses: actions/checkout@v3
