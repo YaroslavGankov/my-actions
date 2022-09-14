@@ -24,6 +24,12 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+      
+      - name: cache-test1
+        uses: actions/cache@v3
+        with:
+          path: test
+          key: ${{ runner.os }}-ololo-${{ hashFiles('test/*') }}
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
@@ -36,10 +42,19 @@ jobs:
           echo test, and deploy your project.
           
       - name: ls -la 1
-        run: ls -la
+        run: |
+          ls -la /test1
+          ls -la /test2
+      
+      - name: cat file1 and file 2
+        run: |
+          cat /test2/file1
+          cat /test2/file2
         
-      - name: clone repo
-        uses: actions/checkout@v3
+      # - name: clone repo
+      #   uses: actions/checkout@v3
         
       - name: ls -la 2
-        run: ls -la
+        run: |
+          ls -la /test1
+          ls -la /test2
