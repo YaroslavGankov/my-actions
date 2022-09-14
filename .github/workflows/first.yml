@@ -43,18 +43,19 @@ jobs:
           
       - name: ls -la 1
         run: |
-          ls -la /test
-          ls -la /test2
+          ls -la
+          ls -la test
+          ls -la test2
       
       - name: cat file1 and file 2
         run: |
-          cat /test2/file1
-          cat /test2/file2
+          cat test2/file1
+          cat test2/file2
         
       # - name: clone repo
       #   uses: actions/checkout@v3
         
       - name: ls -la 2
         run: |
-          ls -la /test
-          ls -la /test2
+          ls -la test
+          ls -la test2
