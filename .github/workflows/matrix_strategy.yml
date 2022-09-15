@@ -18,7 +18,7 @@ on:
 #   cancel-in-progress: true
 
 jobs:
-  concurrency: ${{ github.action == 'example_matrix' }}
+  concurrency: example_matrix
 
   example_matrix:
     runs-on: ubuntu-latest
