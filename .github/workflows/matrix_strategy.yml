@@ -23,7 +23,8 @@ concurrency:
 
 jobs:
   example_matrix:
-#     concurrency: example_matrix
+    concurrency:
+      group: example_matrix
     runs-on: ubuntu-latest
     strategy:
       matrix:
