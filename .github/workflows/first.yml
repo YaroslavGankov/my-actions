@@ -50,6 +50,8 @@ jobs:
           cat test2/file3.txt
           cat test2/file4.txt
           cat test2/folder1/proverka.blake2s
+          echo -e "\n"
+          cat test2/file5.txt
         
       # - name: clone repo
       #   uses: actions/checkout@v3
