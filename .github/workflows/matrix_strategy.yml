@@ -17,8 +17,9 @@ on:
 #   group: ${{ github.action == 'example_matrix' }}
 #   cancel-in-progress: true
 
-
-concurrency: matrix_strategy
+concurrency:
+  group: ${{ github.job == 'example_matrix' }}
+  cancel-in-progress: true
 
 jobs:
   example_matrix:
