@@ -20,8 +20,7 @@ on:
 
 jobs:
   example_matrix:
-    concurrency:
-      group: ${{ github.job.name == 'example_matrix' }}
+    concurrency: example_matrix
     runs-on: ubuntu-latest
     strategy:
       matrix:
