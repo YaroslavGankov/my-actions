@@ -44,10 +44,9 @@ jobs:
       
       - name: cat file1 and file 2
         run: |
-          cat test2/file1.txt
-          cat test2/file2.txt
           cat test2/file3.txt
           cat test2/file4.txt
+          cat test2/folder1/proverka.blake2s
         
       # - name: clone repo
       #   uses: actions/checkout@v3
