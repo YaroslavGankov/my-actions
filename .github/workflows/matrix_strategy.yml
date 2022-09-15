@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: Test_Matrix_Strategy
+  group: ${{ github.action == 'Test_Matrix_Strategy' }}
   cancel-in-progress: true
 
 jobs:
