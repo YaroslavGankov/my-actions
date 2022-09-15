@@ -17,8 +17,8 @@ on:
 #   group: ${{ github.job.name == 'example_matrix' }}
 #   cancel-in-progress: true
 
-concurrency:
-  group: example_matrix
+# concurrency:
+#   group: example_matrix
 
 
 jobs:
