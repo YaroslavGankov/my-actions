@@ -25,7 +25,14 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      - name: create cache
+
+      - name: ls -la 1
+        run: |
+          ls -la
+          ls -la test
+          ls -la test2
+
+      - name: create file5.txt
         run: echo "ololo1" >> test2/file5.txt
       
       - name: cache-test1
