@@ -28,4 +28,4 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: cat files
-        run: cat test2/file${{ matrix.path }}.txt
+        run: cat test2/file${{ matrix.version-skiff }}.txt
