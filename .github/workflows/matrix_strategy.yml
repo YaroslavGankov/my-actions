@@ -35,7 +35,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       - name: print time
-        run: $(date)
+        run: date
       - name: cat files
         run: cat test2/file${{ matrix.version-skiff }}.txt
       - name: sleep
@@ -51,4 +51,4 @@ jobs:
           echo "job:"
           echo ${{ github.job == 'example_matrix' }}
       - name: print time
-        run: $(date)
+        run: date
