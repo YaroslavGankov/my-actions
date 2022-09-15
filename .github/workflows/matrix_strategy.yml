@@ -38,7 +38,7 @@ jobs:
       - name: cat files
         run: cat test2/file${{ matrix.version-skiff }}.txt
       - name: sleep
-        run: sleep 5
+        run: sleep 12
       - name: echo
         run: |
           echo ${{ github.job.name }}
