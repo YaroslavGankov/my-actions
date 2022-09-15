@@ -42,3 +42,6 @@ jobs:
           echo ${{ github.job.name }}
           echo -e "\n"
           echo ${{ github.job }}
+          echo -e "\n"
+          echo "last:"
+          echo ${{ github.action == 'example_matrix' }}
