@@ -1,6 +1,6 @@
 # testing matrix strategy
 
-name: Test_Actions
+name: Test_Matrix_Strategy
 
 # Controls when the workflow will run
 on:
