@@ -24,7 +24,7 @@ on:
 jobs:
   example_matrix:
     concurrency:
-      group: example
+#       group: example
     runs-on: ubuntu-latest
     strategy:
       matrix:
