@@ -29,8 +29,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            test2/file2.txt
-            test2/file1.txt
+            test2
           key: ${{ runner.os }}-ololo-${{ hashFiles('test/indicator-file.txt') }}
 
       # Runs a single command using the runners shell
