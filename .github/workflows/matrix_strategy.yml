@@ -13,11 +13,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# concurrency:
-#   group: ${{ github.action == 'example_matrix' }}
-#   cancel-in-progress: true
+concurrency:
+  group: ${{ github.job.name == 'example_matrix' }}
+  cancel-in-progress: true
 
-concurrency: 'example_matrix'
 
 jobs:
   example_matrix:
@@ -26,8 +25,6 @@ jobs:
       matrix:
         version-skiff: ["1", "2", "3", "4"]
     # The type of runner that the job will run on
-
-
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -43,5 +40,7 @@ jobs:
           echo -e "\n"
           echo ${{ github.job }}
           echo -e "\n"
-          echo "last:"
+          echo "action:"
           echo ${{ github.action == 'example_matrix' }}
+          echo "job:"
+          echo ${{ github.job == 'example_matrix' }}
