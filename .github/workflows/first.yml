@@ -33,7 +33,7 @@ jobs:
           ls -la test2
 
       - name: create file5.txt
-        run: echo "ololo1" >> test2/file5.txt
+        run: echo "2ololo2" >> test2/file5.txt
       
       - name: cache-test1
         uses: actions/cache@v3
