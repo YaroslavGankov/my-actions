@@ -17,10 +17,13 @@ on:
 #   group: ${{ github.job.name == 'example_matrix' }}
 #   cancel-in-progress: true
 
+concurrency:
+  group: example_matrix
+
 
 jobs:
   example_matrix:
-    concurrency: example_matrix
+#     concurrency: example_matrix
     runs-on: ubuntu-latest
     strategy:
       matrix:
