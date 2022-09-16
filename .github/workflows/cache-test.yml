@@ -19,7 +19,9 @@ jobs:
     name: "main-job-ololo"
     runs-on: ubuntu-latest
     env:
-      PATH_TERRAFORM_PROVIDER: .terraform/providers/
+      PATH_TERRAFORM_PROVIDERS: .terraform/providers/
+      TF_ORIGIN_PROVIDER: providers.tf
+      WORKING_DIRECTORY: tf-origins/
     defaults:
       run:
         working-directory: tf-origins/ #my tf-files
@@ -37,15 +39,21 @@ jobs:
           pwd
           echo -e ":.terraform:\n"
           ls -la .terraform
-          echo -e "\n$PATH_TERRAFORM_PROVIDER"
-          ls -la $PATH_TERRAFORM_PROVIDER
+          echo -e "\n$PATH_TERRAFORM_PROVIDERS"
+          ls -la $PATH_TERRAFORM_PROVIDERS
           echo -e "\ntest -d:\n"
-          [[ ! -d $PATH_TERRAFORM_PROVIDER ]] ; echo $?
+          [[ ! -d $PATH_TERRAFORM_PROVIDERS ]] ; echo $?
         continue-on-error: true
+
+      # - name: Check file providers.tf
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: $TF_ORIGIN_PROVIDER
+      #     key: ${{ runner.os }}-${{ hashFiles(env.WORKING_DIRECTORYenv.TF_ORIGIN_PROVIDER) }}
 
       - name: check path
         id: check_path
-        run: ls -la $PATH_TERRAFORM_PROVIDER
+        run: ls -la $PATH_TERRAFORM_PROVIDERS
         continue-on-error: true
       
       - name: First Terraform Init
@@ -60,19 +68,19 @@ jobs:
         id: cache_providers
         uses: actions/cache@v3
         with:
-          path: $PATH_TERRAFORM_PROVIDER**
+          path: $PATH_TERRAFORM_PROVIDERS**
           #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
           #key: ${{ runner.os }}-providers-${{ hashFiles('providers.tf') }}-${{ hashFiles('.terraform/providers/') }}
-          key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf','tf-origins/.terraform/providers/**') }}
+          key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
 
       - name: ls -la
         run: |
           echo -e ":.terraform:\n"
           ls -la .terraform
-          echo -e ":$PATH_TERRAFORM_PROVIDER:\n"
-          ls -la $PATH_TERRAFORM_PROVIDER
+          echo -e ":$PATH_TERRAFORM_PROVIDERS:\n"
+          ls -la $PATH_TERRAFORM_PROVIDERS
           echo -e "\ntest -d:\n"
-          [[ ! -d $PATH_TERRAFORM_PROVIDER ]] ; echo $?
+          [[ ! -d $PATH_TERRAFORM_PROVIDERS ]] ; echo $?
         continue-on-error: true
 
       - name: Terraform Init
@@ -84,7 +92,7 @@ jobs:
         run: |
           echo -e ":.terraform:\n"
           ls -la .terraform
-          echo -e ":$PATH_TERRAFORM_PROVIDER:\n"
+          echo -e ":$PATH_TERRAFORM_PROVIDERS:\n"
           ls -la .terraform/providers/
 
       - name: Terraform Plan
