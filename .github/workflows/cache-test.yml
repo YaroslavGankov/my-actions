@@ -39,10 +39,15 @@ jobs:
           echo -e "\n$PATH_TERRAFORM_PROVIDER"
           ls -la .terraform/providers/
           echo -e "\ntest -d:\n"
-#          ${{ [[ ! -d  PATH_TERRAFORM_PROVIDER ]] ; echo $? }}
+          [[ ! -d $PATH_TERRAFORM_PROVIDER ]] ; echo $?
+
+      - name: check path
+        id: check_path
+        run: ls -la $PATH_TERRAFORM_PROVIDER
+        continue-on-error: true
       
       - name: First Terraform Init for cache
-        if: ${{ [[ ! -d $PATH_TERRAFORM_PROVIDER ]] }}
+        if: ${{ steps.check_path.outcome = 'failure' }}
         #if: ${{ echo $([ -d snap ] ; echo $?) }}        
         id: first_init
         run: |
@@ -61,10 +66,10 @@ jobs:
         run: |
           echo -e ":.terraform:\n"
           ls -la .terraform
-          echo -e ":${{ PATH_TERRAFORM_PROVIDER }}:\n"
+          echo -e ":$PATH_TERRAFORM_PROVIDER:\n"
           ls -la .terraform/providers/
           echo -e "\ntest -d:\n"
-          [[ ! -d ${{ PATH_TERRAFORM_PROVIDER }} ]] ; echo $?
+          [[ ! -d $PATH_TERRAFORM_PROVIDER ]] ; echo $?
 
       - name: Terraform Init
         if: ${{ steps.cache_providers.outputs.cache-hit != 'true' }}
