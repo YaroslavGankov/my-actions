@@ -39,7 +39,7 @@ jobs:
           echo -e ":${{ PATH_TERRAFORM_PROVIDER }}:\n"
           ls -la .terraform/providers/
           echo -e "\ntest -d:\n"
-          ${{ [[ ! -d  PATH_TERRAFORM_PROVIDER ]] ; echo $? }}
+#          ${{ [[ ! -d  PATH_TERRAFORM_PROVIDER ]] ; echo $? }}
       
       - name: First Terraform Init for cache
         if: ${{ [[ ! -d env.PATH_TERRAFORM_PROVIDER ]] }}
