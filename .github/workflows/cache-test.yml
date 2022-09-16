@@ -19,7 +19,7 @@ jobs:
     name: "main-job-ololo"
     runs-on: ubuntu-latest
     env:
-      PATH_TERRAFORM_PROVIDER: ".terraform/providers/"
+      PATH_TERRAFORM_PROVIDER: .terraform/providers/
     defaults:
       run:
         working-directory: tf-origins/ #my tf-files
