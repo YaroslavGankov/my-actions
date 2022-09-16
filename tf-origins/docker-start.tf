@@ -20,7 +20,7 @@ resource "docker_container" "nginx" {
   }
 }
 
-resource "null_resource" "command1" {
+resource "null_resource" "command2" {
     provisioner "local-exec" {
         command = "echo Ololo $(date)"
     }
