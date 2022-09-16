@@ -45,25 +45,24 @@ jobs:
           [[ ! -d $PATH_TERRAFORM_PROVIDERS ]] ; echo $?
         continue-on-error: true
 
-      # - name: Check file providers.tf
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: $TF_ORIGIN_PROVIDER
-      #     key: ${{ runner.os }}-${{ hashFiles(env.WORKING_DIRECTORYenv.TF_ORIGIN_PROVIDER) }}
+      #сначала кешируем файл providers.tf и сверяем его
+      - name: Check file providers.tf
+        id: check_file_origin_providers_tf
+        uses: actions/cache@v3
+        with:
+          path: $TF_ORIGIN_PROVIDER
+          key: ${{ runner.os }}-${{ hashFiles(env.WORKING_DIRECTORYenv.TF_ORIGIN_PROVIDER) }}
 
-      - name: check path
-        id: check_path
-        run: ls -la $PATH_TERRAFORM_PROVIDERS
-        continue-on-error: true
-      
+      #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
-        if: ${{ steps.check_path.outcome == 'failure' }}
+        if: ${{ steps.check_file_origin_providers_tf.outputs.cache-hit != 'true' }}
         #if: ${{ echo $([ -d snap ] ; echo $?) }}        
         id: first_init
         run: |
           echo "startuem"
           terraform init
 
+      #кешируем провайдеров
       - name: Cache_Terraform_Providers
         id: cache_providers
         uses: actions/cache@v3
@@ -83,6 +82,7 @@ jobs:
           [[ ! -d $PATH_TERRAFORM_PROVIDERS ]] ; echo $?
         continue-on-error: true
 
+      #если из кеша по какой-либо причине не были извлечены провайдеры, то запускаем Init заново
       - name: Terraform Init
         if: ${{ steps.cache_providers.outputs.cache-hit != 'true' }}
         id: init
