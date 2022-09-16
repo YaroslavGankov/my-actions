@@ -40,6 +40,7 @@ jobs:
           ls -la .terraform/providers/
           echo -e "\ntest -d:\n"
           [[ ! -d $PATH_TERRAFORM_PROVIDER ]] ; echo $?
+        continue-on-error: true
 
       - name: check path
         id: check_path
@@ -70,6 +71,7 @@ jobs:
           ls -la .terraform/providers/
           echo -e "\ntest -d:\n"
           [[ ! -d $PATH_TERRAFORM_PROVIDER ]] ; echo $?
+        continue-on-error: true
 
       - name: Terraform Init
         if: ${{ steps.cache_providers.outputs.cache-hit != 'true' }}
