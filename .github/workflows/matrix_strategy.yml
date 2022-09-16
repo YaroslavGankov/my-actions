@@ -24,9 +24,13 @@ on:
 
 jobs:
   example_matrix:
+#     #запускаются 2 Jobs параллельно и выполняются параллельно, 2 Jobs отменяются и не запускаются
+#     concurrency:
+#       group: example_matrix
+#       cancel-in-progress: true
+
     concurrency:
       group: example_matrix
-      cancel-in-progress: true
 
     runs-on: ubuntu-latest
     strategy:
