@@ -13,6 +13,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+#запускаются все Jobs параллельно и выполняются параллельно. Выполнились все
 concurrency:
   group: ${{ github.job.name == 'example_matrix' }}
   cancel-in-progress: true
@@ -23,8 +24,10 @@ concurrency:
 
 jobs:
   example_matrix:
-#     concurrency: example_matrix
+#     concurrency:
 #       group: example_matrix
+#       cancel-in-progress: true
+
     runs-on: ubuntu-latest
     strategy:
       matrix:
