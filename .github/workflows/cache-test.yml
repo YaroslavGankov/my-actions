@@ -57,10 +57,28 @@ jobs:
           #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
           key: ${{ runner.os }}-tf_providers-${{ hashFiles('providers.tf') }}-${{ hashFiles('.terraform/providers/**') }}
 
+      - name: ls -la
+        run: |
+          echo -e ":.terraform:\n"
+          ls -la .terraform
+          echo -e ":${{ PATH_TERRAFORM_PROVIDER }}:\n"
+          ls -la .terraform/providers/
+          echo -e "\ntest -d:\n"
+          [[ ! -d ${{ PATH_TERRAFORM_PROVIDER }} ]] ; echo $?
+
       - name: Terraform Init
         if: ${{ steps.cache_providers.outputs.cache-hit != 'true' }}
         id: init
         run: terraform init
+
+      - name: ls -la
+        run: |
+          echo -e ":.terraform:\n"
+          ls -la .terraform
+          echo -e ":${{ PATH_TERRAFORM_PROVIDER }}:\n"
+          ls -la .terraform/providers/
+          echo -e "\ntest -d:\n"
+          [[ ! -d ${{ PATH_TERRAFORM_PROVIDER }} ]] ; echo $?
 
       - name: Terraform Plan
         # id: plan
