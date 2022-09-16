@@ -34,6 +34,7 @@ jobs:
 
       - name: ls -la
         run: |
+          pwd
           echo -e ":.terraform:\n"
           ls -la .terraform
           echo -e "\n$PATH_TERRAFORM_PROVIDER"
@@ -85,7 +86,6 @@ jobs:
           echo -e ":$PATH_TERRAFORM_PROVIDER:\n"
           ls -la .terraform/providers/
           echo -e "\ntest -d:\n"
-          [[ ! -d $PATH_TERRAFORM_PROVIDER ]] ; echo $?
 
       - name: Terraform Plan
         # id: plan
