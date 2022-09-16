@@ -80,10 +80,10 @@ jobs:
         run: |
           echo -e ":.terraform:\n"
           ls -la .terraform
-          echo -e ":${{ PATH_TERRAFORM_PROVIDER }}:\n"
+          echo -e ":$PATH_TERRAFORM_PROVIDER:\n"
           ls -la .terraform/providers/
           echo -e "\ntest -d:\n"
-          [[ ! -d ${{ PATH_TERRAFORM_PROVIDER }} ]] ; echo $?
+          [[ ! -d $PATH_TERRAFORM_PROVIDER ]] ; echo $?
 
       - name: Terraform Plan
         # id: plan
