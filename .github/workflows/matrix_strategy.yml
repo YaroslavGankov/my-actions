@@ -13,9 +13,9 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# concurrency:
-#   group: ${{ github.job.name == 'example_matrix' }}
-#   cancel-in-progress: true
+concurrency:
+  group: ${{ github.job.name == 'example_matrix' }}
+  cancel-in-progress: true
 
 # concurrency:
 #   group: example_matrix
@@ -23,7 +23,7 @@ on:
 
 jobs:
   example_matrix:
-    concurrency: example_matrix
+#     concurrency: example_matrix
 #       group: example_matrix
     runs-on: ubuntu-latest
     strategy:
