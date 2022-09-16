@@ -1,35 +1,27 @@
-# testing matrix strategy
-
 name: Test_Matrix_Strategy
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-#   push:
-#     branches: [ "main" ]
-#   pull_request:
-#     branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# #запускаются все Jobs параллельно и выполняются параллельно. Выполнились все
+#     ----------------------------------------------------------------------------------------------
+# #запускаются все Jobs параллельно и выполняются параллельно. Выполнились все Job
 # concurrency:
 #   group: ${{ github.job.name == 'example_matrix' }}
 #   cancel-in-progress: true
 
-# concurrency:
-#   group: example_matrix
+#запускаются все Jobs параллельно и выполняются параллельно. Выполнились все Job
+concurrency:
+  group: example_matrix
 
 
 jobs:
   example_matrix:
+#     ----------------------------------------------------------------------------------------------
 #     #запускаются 2 Jobs параллельно и выполняются параллельно, 2 Jobs отменяются и не запускаются
 #     concurrency:
 #       group: example_matrix
 #       cancel-in-progress: true
 
-
+#     ----------------------------------------------------------------------------------------------
 #     #поведение разное
 #     #поведение 1. запускаются 1 Job, 1 Job отменяется, 2 Jobs выполняются после выполнения первой Job (одна за другой)
 #     #поведение 2. запускаются 2 Jobs параллельно и выполняются параллельно,...
@@ -38,16 +30,15 @@ jobs:
 #     concurrency:
 #       group: example_matrix
       
-    concurrency: example_matrix
+#     ----------------------------------------------------------------------------------------------      
+#     #запускаются 2 Jobs параллельно и выполняются параллельно, следующие 2 Jobs запускаются после первых и выполняются параллельно
+#     concurrency: example_matrix
 
     runs-on: ubuntu-latest
     strategy:
       matrix:
         version-skiff: ["1", "2", "3", "4"]
-    # The type of runner that the job will run on
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       - name: print time
         run: date
