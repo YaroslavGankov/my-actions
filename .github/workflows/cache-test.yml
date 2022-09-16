@@ -47,7 +47,7 @@ jobs:
         continue-on-error: true
       
       - name: First Terraform Init for cache
-        if: ${{ steps.check_path.outcome = 'failure' }}
+        if: ${{ steps.check_path.outcome == 'failure' }}
         #if: ${{ echo $([ -d snap ] ; echo $?) }}        
         id: first_init
         run: |
