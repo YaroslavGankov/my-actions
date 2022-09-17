@@ -21,10 +21,10 @@ jobs:
     env:
       PATH_TERRAFORM_PROVIDERS: .terraform/providers/
       TF_ORIGIN_PROVIDER: providers.tf
-      WORKING_DIRECTORY: tf-origins
+      WORKING_DIRECTORY: tf-origins #my dir with tf-files
     defaults:
       run:
-        working-directory: ${{ env.WORKING_DIRECTORY }} #my tf-files
+        working-directory: ${{ env.WORKING_DIRECTORY }} 
     steps:
       - uses: actions/checkout@v3
 
@@ -50,7 +50,8 @@ jobs:
         id: check_file_origin_providers_tf
         uses: actions/cache@v3
         with:
-          path: tf-origins/providers.tf
+          #path: tf-origins/providers.tf
+          path: ${{ env.WORKING_DIRECTORY'/'env.TF_ORIGIN_PROVIDER }}
           key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
 
       #если файл providers.tf не тот, то запускаем Init
