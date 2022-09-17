@@ -1,4 +1,4 @@
-name: "Terraform"
+name: "Test Cache For Terraform"
 
 on:
   workflow_dispatch:
@@ -51,7 +51,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: $WORKING_DIRECTORY$TF_ORIGIN_PROVIDER
-          key: ${{ runner.os }}-${{ hashFiles(env.WORKING_DIRECTORYenv.TF_ORIGIN_PROVIDER) }}
+          key: ${{ runner.os }}-${{ hashFiles($WORKING_DIRECTORY$TF_ORIGIN_PROVIDER) }}
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
