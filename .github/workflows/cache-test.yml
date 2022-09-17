@@ -50,8 +50,10 @@ jobs:
         id: check_file_origin_providers_tf
         uses: actions/cache@v3
         with:
+          ##working variant:
           #path: tf-origins/providers.tf
-          path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
+          #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
+          path: ${{ join('[env.WORKING_DIRECTORY, env.TF_ORIGIN_PROVIDER]','/') }}
           key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
 
       #если файл providers.tf не тот, то запускаем Init
