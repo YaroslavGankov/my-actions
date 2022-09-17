@@ -37,6 +37,7 @@ jobs:
       - name: ls -la
         run: |
           pwd
+          echo ${{ join('[env.WORKING_DIRECTORY, env.TF_ORIGIN_PROVIDER]','/') }}
           echo -e ":.terraform:\n"
           ls -la .terraform
           echo -e "\n$PATH_TERRAFORM_PROVIDERS"
