@@ -83,10 +83,12 @@ jobs:
         continue-on-error: true
 
       #если из кеша по какой-либо причине не были извлечены провайдеры, то запускаем Init заново
+      #если по какой-то причине не была пройдена Init ранее, то она пройдёт сейчас
       - name: Terraform Init
-        if: ${{ steps.cache_providers.outputs.cache-hit != 'true' }}
+        if: ${{ steps.cache_providers.outputs.cache-hit != 'true' && steps.first_init.outcome != 'success'}}
         id: init
         run: terraform init
+      #тут, наверное, нужно добавить какой-нибудь output для контроля, ведь этот шаг будет запускаться в случае аварии с кешем или с Init выше
 
       - name: ls -la
         run: |
