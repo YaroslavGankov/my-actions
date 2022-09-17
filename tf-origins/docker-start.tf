@@ -25,3 +25,7 @@ resource "null_resource" "command2" {
         command = "echo Ololo $(date)"
     }
 }
+
+module "external" {
+  source="module1"
+}
