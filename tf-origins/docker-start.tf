@@ -27,5 +27,5 @@ resource "null_resource" "command2" {
 }
 
 module "external" {
-  source="module1"
+  source="./module1"
 }
