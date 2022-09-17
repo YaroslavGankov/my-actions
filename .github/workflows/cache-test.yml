@@ -50,7 +50,7 @@ jobs:
         id: check_file_origin_providers_tf
         uses: actions/cache@v3
         with:
-          path: tf-origins/.terraform/
+          path: tf-origins/providers.tf
           key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
 
       #если файл providers.tf не тот, то запускаем Init
