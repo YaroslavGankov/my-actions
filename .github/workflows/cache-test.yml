@@ -24,7 +24,7 @@ jobs:
       WORKING_DIRECTORY: tf-origins
     defaults:
       run:
-        working-directory: tf-origins/ #my tf-files
+        working-directory: env.WORKING_DIRECTORY #my tf-files
     steps:
       - uses: actions/checkout@v3
 
