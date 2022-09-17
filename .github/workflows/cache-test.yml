@@ -38,7 +38,7 @@ jobs:
         run: |
           pwd
           echo ${{ join('["$WORKING_DIRECTORY", "/", "$TF_ORIGIN_PROVIDER"]') }}
-          echo ${{ join('"$WORKING_DIRECTORY", "/", "$TF_ORIGIN_PROVIDER"']) }}
+          echo ${{ join('"$WORKING_DIRECTORY", "/", "$TF_ORIGIN_PROVIDER"') }}
           echo ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
           echo -e ":.terraform:\n"
           ls -la .terraform
