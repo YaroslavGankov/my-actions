@@ -61,6 +61,7 @@ jobs:
         run: |
           echo "startuem"
           terraform init
+          sleep 5
 
       #кешируем провайдеры
       - name: Cache_Terraform_Providers
@@ -91,7 +92,9 @@ jobs:
       - name: Terraform Init
         if: ${{ steps.cache_providers.outputs.cache-hit != 'true' && steps.first_init.outcome != 'success' }}
         id: init
-        run: terraform init
+        run: |
+          terraform init
+          sleep 5
       #тут, наверное, нужно добавить какой-нибудь output для контроля, ведь этот шаг будет запускаться в случае аварии с кешем или с Init выше
     
       - name: Initializing only Modules
