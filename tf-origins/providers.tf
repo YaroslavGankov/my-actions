@@ -1,4 +1,4 @@
-#if this file was changed then 'terraform init' will execute
+#if this file was changed then 'terraform init' will execute.
 
 terraform {
   required_providers {
