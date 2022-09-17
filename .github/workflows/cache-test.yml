@@ -57,7 +57,7 @@ jobs:
           ##working variant:
           #path: tf-origins/providers.tf
           #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
-          path: ${{ join('[env.WORKING_DIRECTORY, env.TF_ORIGIN_PROVIDER]','/') }}
+          path: ${{ join('$WORKING_DIRECTORY/$TF_ORIGIN_PROVIDER') }}
           key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
 
       #если файл providers.tf не тот, то запускаем Init
