@@ -51,7 +51,7 @@ jobs:
         uses: actions/cache@v3
         with:
           #path: tf-origins/providers.tf
-          path: ${{ join( [{env.WORKING_DIRECTORY}, {env.TF_ORIGIN_PROVIDER}],'/') }}
+          path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
           key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
 
       #если файл providers.tf не тот, то запускаем Init
