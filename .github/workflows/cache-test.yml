@@ -93,6 +93,11 @@ jobs:
         id: init
         run: terraform init
       #тут, наверное, нужно добавить какой-нибудь output для контроля, ведь этот шаг будет запускаться в случае аварии с кешем или с Init выше
+    
+      - name: Initializing only Modules
+        if: ${{ steps.cache_providers.outputs.cache-hit == 'true' }}
+        run: terraform get
+    
 
       - name: ls -la
         run: |
