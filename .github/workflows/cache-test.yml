@@ -22,7 +22,7 @@ jobs:
       PATH_TERRAFORM_PROVIDERS: .terraform/providers/
       TF_ORIGIN_PROVIDER: providers.tf
       WORKING_DIRECTORY: tf-origins #my dir with tf-files
-      PATH_TO_CACHE_ORIGIN_PROVIDER: "$WORKING_DIRECTORY/$TF_ORIGIN_PROVIDER"
+      PATH_TO_CACHE_ORIGIN_PROVIDER: ${{ join('$WORKING_DIRECTORY/$TF_ORIGIN_PROVIDER') }}
     defaults:
       run:
         working-directory: ${{ env.WORKING_DIRECTORY }} 
