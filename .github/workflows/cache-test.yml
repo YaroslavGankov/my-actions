@@ -22,6 +22,7 @@ jobs:
       PATH_TERRAFORM_PROVIDERS: .terraform/providers/
       TF_ORIGIN_PROVIDER: providers.tf
       WORKING_DIRECTORY: tf-origins #my dir with tf-files
+      PATH_TO_CACHE_ORIGIN_PROVIDER: $WORKING_DIRECTORY/$TF_ORIGIN_PROVIDER
     defaults:
       run:
         working-directory: ${{ env.WORKING_DIRECTORY }} 
@@ -37,6 +38,7 @@ jobs:
       - name: ls -la
         run: |
           pwd
+          echo $PATH_TO_CACHE_ORIGIN_PROVIDER
           echo ${{ join('["$WORKING_DIRECTORY", "/", "$TF_ORIGIN_PROVIDER"]') }}
           echo ${{ join('$WORKING_DIRECTORY/$TF_ORIGIN_PROVIDER') }}
           echo ${{ join('"$WORKING_DIRECTORY/$TF_ORIGIN_PROVIDER"') }}
@@ -57,8 +59,9 @@ jobs:
           ##working variant:
           #path: tf-origins/providers.tf
           #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
-          path: ${{ join('$WORKING_DIRECTORY/$TF_ORIGIN_PROVIDER') }}
-          key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
+          path: env.PATH_TO_CACHE_ORIGIN_PROVIDER
+          #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
+          key: ${{ runner.os }}-${{ hashFiles(env.PATH_TO_CACHE_ORIGIN_PROVIDER) }}
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
