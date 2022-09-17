@@ -62,18 +62,22 @@ jobs:
           echo "startuem"
           terraform init
 
-      #кешируем провайдеров
+      #кешируем провайдеры
       - name: Cache_Terraform_Providers
         id: cache_providers
         uses: actions/cache@v3
         with:
-          path: tf-origins/.terraform/providers
+          path: |
+            tf-origins/.terraform/providers
+            tf-origins/.terraform.lock.hcl
           #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
           key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}-${{ hashFiles('tf-origins/.terraform/providers/') }}
           #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
 
       - name: ls -la
         run: |
+          echo -e ":ls -la:\n"
+          ls -la
           echo -e ":.terraform:\n"
           ls -la .terraform
           echo -e ":$PATH_TERRAFORM_PROVIDERS:\n"
