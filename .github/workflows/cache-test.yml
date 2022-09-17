@@ -40,7 +40,6 @@ jobs:
           echo ${{ join('[env.WORKING_DIRECTORY, /, env.TF_ORIGIN_PROVIDER]') }}
           echo ${{ join('[env.WORKING_DIRECTORY, env.TF_ORIGIN_PROVIDER]','/') }}
           echo ${{ join({env.WORKING_DIRECTORY, env.TF_ORIGIN_PROVIDER},'/') }}
-#рабочий вариант
           echo ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
           echo -e ":.terraform:\n"
           ls -la .terraform
