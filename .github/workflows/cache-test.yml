@@ -51,7 +51,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: tf-origins/.terraform/providers/
-          key: ${{ runner.os }}-${{ hashFiles(tf-origins/) }}
+          key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
