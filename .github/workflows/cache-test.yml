@@ -58,7 +58,7 @@ jobs:
           ##working variant:
           #path: tf-origins/providers.tf
           #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
-          path: env.PATH_TO_CACHE_ORIGIN_PROVIDER
+          path: format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)
           #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
           key: ${{ runner.os }}-${{ hashFiles(env.PATH_TO_CACHE_ORIGIN_PROVIDER) }}
 
