@@ -12,3 +12,6 @@ terraform {
 }
 
 provider "docker" {}
+
+
+provider "aws" {}
