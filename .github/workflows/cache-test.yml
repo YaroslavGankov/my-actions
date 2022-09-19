@@ -2,10 +2,10 @@ name: "Test Cache For Terraform"
 
 on:
   workflow_dispatch:
-
+  
 jobs:
   terraform1:
-    name: "main-job-ololo"
+    name: "test1"
     runs-on: ubuntu-latest
     env:
       PATH_TERRAFORM_PROVIDERS: .terraform/providers/
