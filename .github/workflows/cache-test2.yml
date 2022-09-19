@@ -5,7 +5,7 @@ on:
   
 jobs:
   terraform1:
-    name: "test1"
+    name: "test2"
     runs-on: ubuntu-latest
     env:
       PATH_TERRAFORM_PROVIDERS: .terraform/providers/
