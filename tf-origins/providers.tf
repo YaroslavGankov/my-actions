@@ -1,6 +1,7 @@
 #if this file was changed then 'terraform init' will execute....
 #next comment
 #second comment
+#third comment
 
 terraform {
   required_providers {
