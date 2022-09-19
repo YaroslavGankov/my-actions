@@ -64,7 +64,6 @@ jobs:
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
         if: ${{ steps.check_file_origin_providers_tf.outputs.cache-hit != 'true' }}
-        #if: ${{ echo $([ -d snap ] ; echo $?) }}        
         id: first_init
         run: |
           echo "startuem"
@@ -77,8 +76,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            tf-origins/.terraform/providers
-            tf-origins/.terraform.lock.hcl
+            ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS }}
+            ${{ format('{0}{1}',env.WORKING_DIRECTORY,'/.terraform.lock.hcl' }}
           #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
           key: ${{ runner.os }}-providers-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS)) }}
           #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
