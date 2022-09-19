@@ -1,4 +1,4 @@
-name: "Test Cache For Terraform"
+name: "Test Cache 2"
 
 on:
   workflow_dispatch:
@@ -29,7 +29,7 @@ jobs:
           echo ${{ join(env.WORKING_DIRECTORY, env.TF_ORIGIN_PROVIDER) }}
           echo ${{ join('$WORKING_DIRECTORY/$TF_ORIGIN_PROVIDER') }}
           echo ${{ join('"$WORKING_DIRECTORY/$TF_ORIGIN_PROVIDER"') }}
-          echo ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
+          echo ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}-1
           echo -e ":.terraform:\n"
           ls -la .terraform
           echo -e "\n$PATH_TERRAFORM_PROVIDERS"
@@ -48,7 +48,7 @@ jobs:
           #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
           path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
           #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
-          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}
+          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-1
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
