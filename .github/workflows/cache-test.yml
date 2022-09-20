@@ -37,9 +37,9 @@ jobs:
       #добавляем файл настройки для плагинов
       - name: Make dir $HOME/.terraform.d/plugin-cache
         run: |
-          ls la $TF_PLUGIN_CACHE_DIR
           export TF_PLUGIN_CACHE_DIR="$TF_PLUGIN_CACHE_DIR"
           echo $TF_PLUGIN_CACHE_DIR
+          ls -la $TF_PLUGIN_CACHE_DIR
           mkdir -p $TF_PLUGIN_CACHE_DIR
 
       #сначала кешируем файл providers.tf и сверяем его
