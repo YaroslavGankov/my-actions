@@ -11,7 +11,7 @@ jobs:
       PATH_TERRAFORM_PROVIDERS: .terraform/providers/
       TF_ORIGIN_PROVIDER: providers.tf
       WORKING_DIRECTORY: tf-origins #my dir with tf-files
-      #TF_PLUGIN_CACHE_DIR: $HOME/.terraform.d/plugin-cache
+      TF_PLUGIN_CACHE_DIR: $HOME/.terraform.d/plugin-cache
     defaults:
       run:
         working-directory: ${{ env.WORKING_DIRECTORY }} 
@@ -37,10 +37,10 @@ jobs:
       #добавляем файл настройки для плагинов
       - name: Make dir $HOME/.terraform.d/plugin-cache
         run: |
-          export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"
+          export TF_PLUGIN_CACHE_DIR="$TF_PLUGIN_CACHE_DIR"
           echo $TF_PLUGIN_CACHE_DIR
-          ls -la $TF_PLUGIN_CACHE_DIR
           mkdir -p $TF_PLUGIN_CACHE_DIR
+          ls -la $TF_PLUGIN_CACHE_DIR
 
       #сначала кешируем файл providers.tf и сверяем его
       - name: Cache. Check file providers.tf
