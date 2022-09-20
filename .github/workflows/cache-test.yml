@@ -39,6 +39,8 @@ jobs:
         run: |
           mkdir -p $TF_PLUGIN_CACHE_DIR
           ls la $TF_PLUGIN_CACHE_DIR
+          export TF_PLUGIN_CACHE_DIR=$TF_PLUGIN_CACHE_DIR
+          echo $TF_PLUGIN_CACHE_DIR
 
       #сначала кешируем файл providers.tf и сверяем его
       - name: Cache. Check file providers.tf
