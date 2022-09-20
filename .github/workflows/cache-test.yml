@@ -71,6 +71,12 @@ jobs:
           terraform init
           sleep 5
 
+      - name: ls -la
+        run: |
+          tree -a $HOME
+          tree -a $WORKING_DIRECTORY
+        continue-on-error: true
+
       #кешируем провайдеры
       - name: Cache_Terraform
         id: cache_providers
@@ -84,7 +90,8 @@ jobs:
 
       - name: ls -la
         run: |
-          tree
+          tree -a $HOME
+          tree -a $WORKING_DIRECTORY
           echo -e ":ls -la:\n"
           ls -la ${{ runner.temp }}/_github_home/.terraform.d/plugin-cache
           ls -la .
@@ -112,6 +119,7 @@ jobs:
           ls -la .terraform
           echo -e ":$PATH_TERRAFORM_PROVIDERS:\n"
           ls -la .terraform/providers/
+        continue-on-error: true
 
       - name: Terraform Plan
         # id: plan
