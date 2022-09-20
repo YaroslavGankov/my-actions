@@ -38,6 +38,7 @@ jobs:
       - name: Make dir $HOME/.terraform.d/plugin-cache
         run: |
           mkdir -p $TF_PLUGIN_CACHE_DIR
+          ls la $TF_PLUGIN_CACHE_DIR
 
       #сначала кешируем файл providers.tf и сверяем его
       - name: Cache. Check file providers.tf
@@ -99,7 +100,6 @@ jobs:
 
       - name: tree -a $HOME/.terraform.d/plugin-cache
         run: |
-          cat ~/.terraformrc
           tree -a $HOME/.terraform.d/plugin-cache
         continue-on-error: true
 
