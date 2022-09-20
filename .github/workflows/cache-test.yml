@@ -52,7 +52,7 @@ jobs:
       - name: Added .terraformrc
         run: |
           mkdir -p $HOME/.terraform.d/plugin-cache
-          echo 'plugin_cache_dir   = "~/.terraform.d/plugin-cache"' >> ~/.terraformrc
+          echo 'plugin_cache_dir   = "$HOME/.terraform.d/plugin-cache"' >> ~/.terraformrc
       
       #сначала кешируем файл providers.tf и сверяем его
       - name: Check file providers.tf
@@ -114,7 +114,9 @@ jobs:
 
       - name: tree -a $HOME/.terraform.d/plugin-cache
         run: |
+          cat ~/.terraformrc
           tree -a $HOME/.terraform.d/plugin-cache
+        continue-on-error: true
 
       #Init с кешированными данными
       - name: Terraform Init
