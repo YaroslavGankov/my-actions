@@ -11,7 +11,7 @@ jobs:
       PATH_TERRAFORM_PROVIDERS: .terraform/providers/
       TF_ORIGIN_PROVIDER: providers.tf
       WORKING_DIRECTORY: tf-origins #my dir with tf-files
-      TF_PLUGIN_CACHE_DIR: '"$HOME/.terraform.d/plugin-cache"'
+      TF_PLUGIN_CACHE_DIR: $HOME/.terraform.d/plugin-cache
     defaults:
       run:
         working-directory: ${{ env.WORKING_DIRECTORY }} 
@@ -24,35 +24,20 @@ jobs:
           terraform_wrapper: true
           terraform_version: 1.2.5
 
+      # - name: Export TF_PLUGIN_CACHE_DIR
+      #   run: export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"
+
       - name: ls -la
         run: |
           pwd
-          echo "HOME:"
-          #/home/runner
-          echo $HOME
-          echo "env.HOME:"
-          echo ${{ env.HOME }}
-          echo ${{ runner.temp }}
-          echo "tree:"
-          #/home/runner/work/_temp
-          tree ${{ runner.temp }}
-          echo ${{ join(env.WORKING_DIRECTORY, env.TF_ORIGIN_PROVIDER) }}
-          echo ${{ join('$WORKING_DIRECTORY/$TF_ORIGIN_PROVIDER') }}
-          echo ${{ join('"$WORKING_DIRECTORY/$TF_ORIGIN_PROVIDER"') }}
-          echo ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
-          echo -e ":.terraform:\n"
-          ls -la .terraform
-          echo -e "\n$PATH_TERRAFORM_PROVIDERS"
-          ls -la $PATH_TERRAFORM_PROVIDERS
-          echo -e "\ndu -s :\n"
-          du -s .terraform
+          echo "echo TF_PLUGIN_CACHE_DIR:"
+          echo $TF_PLUGIN_CACHE_DIR
         continue-on-error: true
 
-      # #добавляем файл настройки для плагинов
-      # - name: Added .terraformrc
-      #   run: |
-      #     mkdir -p $HOME/.terraform.d/plugin-cache
-      #     echo 'plugin_cache_dir   = "$HOME/.terraform.d/plugin-cache"' >> ~/.terraformrc
+      #добавляем файл настройки для плагинов
+      - name: Make dir $HOME/.terraform.d/plugin-cache
+        run: |
+          mkdir -p $HOME/.terraform.d/plugin-cache
 
       #сначала кешируем файл providers.tf и сверяем его
       - name: Cache. Check file providers.tf
