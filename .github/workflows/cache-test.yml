@@ -54,8 +54,6 @@ jobs:
       #     mkdir -p $HOME/.terraform.d/plugin-cache
       #     echo 'plugin_cache_dir   = "$HOME/.terraform.d/plugin-cache"' >> ~/.terraformrc
 
-      TF_PLUGIN_CACHE_DIR: $HOME/.terraform.d/plugin-cache
-      
       #сначала кешируем файл providers.tf и сверяем его
       - name: Cache. Check file providers.tf
         id: check_file_origin_providers_tf
