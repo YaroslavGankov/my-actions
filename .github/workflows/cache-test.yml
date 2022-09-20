@@ -27,9 +27,11 @@ jobs:
         run: |
           pwd
           echo "HOME:"
+          #/home/runner
           echo $HOME
           echo ${{ runner.temp }}
           echo "tree:"
+          #/home/runner/work/_temp
           tree ${{ runner.temp }}
           echo ${{ join(env.WORKING_DIRECTORY, env.TF_ORIGIN_PROVIDER) }}
           echo ${{ join('$WORKING_DIRECTORY/$TF_ORIGIN_PROVIDER') }}
@@ -46,7 +48,7 @@ jobs:
       #добавляем файл настройки для плагинов
       
       - name: Added .terraformrc
-        run: echo 'plugin_cache_dir   = "$HOME/.terraform.d/plugin-cache"' >> ${{ runner.temp }}/_github_home/.terraformrc
+        run: echo 'plugin_cache_dir   = "$HOME/.terraform.d/plugin-cache"' >> ${{ runner.temp }}/.terraformrc
       
       #сначала кешируем файл providers.tf и сверяем его
       - name: Check file providers.tf
