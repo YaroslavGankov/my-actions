@@ -12,6 +12,7 @@ jobs:
       TF_ORIGIN_PROVIDER: providers.tf
       WORKING_DIRECTORY: tf-origins #my dir with tf-files
       TF_PLUGIN_CACHE_DIR: $HOME/.terraform.d/plugin-cache
+      TF_PLUGIN_CACHE_DIR2: ~/.terraform.d/plugin-cache
     defaults:
       run:
         working-directory: ${{ env.WORKING_DIRECTORY }} 
@@ -33,6 +34,7 @@ jobs:
           echo ~
           echo "echo TF_PLUGIN_CACHE_DIR:"
           echo $TF_PLUGIN_CACHE_DIR
+          echo $TF_PLUGIN_CACHE_DIR2
           ls -la ~/.terraform.d/plugin-cache
         continue-on-error: true
 
