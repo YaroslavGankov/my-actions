@@ -11,7 +11,7 @@ jobs:
       PATH_TERRAFORM_PROVIDERS: .terraform/providers/
       TF_ORIGIN_PROVIDER: providers.tf
       WORKING_DIRECTORY: tf-origins #my dir with tf-files
-      TF_PLUGIN_CACHE_DIR: $HOME/.terraform.d/plugin-cache
+      TF_PLUGIN_CACHE_DIR: "$HOME/.terraform.d/plugin-cache"
     defaults:
       run:
         working-directory: ${{ env.WORKING_DIRECTORY }} 
