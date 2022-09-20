@@ -26,6 +26,11 @@ jobs:
       - name: ls -la
         run: |
           pwd
+          echo "HOME:"
+          echo $HOME
+          echo ${{ runner.temp }}
+          echo "tree:"
+          tree ${{ runner.temp }}
           echo ${{ join(env.WORKING_DIRECTORY, env.TF_ORIGIN_PROVIDER) }}
           echo ${{ join('$WORKING_DIRECTORY/$TF_ORIGIN_PROVIDER') }}
           echo ${{ join('"$WORKING_DIRECTORY/$TF_ORIGIN_PROVIDER"') }}
@@ -34,10 +39,15 @@ jobs:
           ls -la .terraform
           echo -e "\n$PATH_TERRAFORM_PROVIDERS"
           ls -la $PATH_TERRAFORM_PROVIDERS
-          echo -e "\ntest -d:\n"
-          [[ ! -d $PATH_TERRAFORM_PROVIDERS ]] ; echo $?
+          echo -e "\ndu -s :\n"
+          du -s .terraform
         continue-on-error: true
 
+      #добавляем файл настройки для плагинов
+      
+      - name: Added .terraformrc
+        run: echo 'plugin_cache_dir   = "$HOME/.terraform.d/plugin-cache"' >> ${{ runner.temp }}/_github_home/.terraformrc
+      
       #сначала кешируем файл providers.tf и сверяем его
       - name: Check file providers.tf
         id: check_file_origin_providers_tf
@@ -48,7 +58,7 @@ jobs:
           #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
           path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
           #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
-          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-1
+          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-2
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
@@ -60,21 +70,22 @@ jobs:
           sleep 5
 
       #кешируем провайдеры
-      - name: Cache_Terraform_Providers
+      - name: Cache_Terraform_Plugin_Cache
         id: cache_providers
         uses: actions/cache@v3
         with:
-          path: |
-            ${{ format('{0}{1}{2}{3}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS,'**') }}
-            ${{ format('{0}{1}',env.WORKING_DIRECTORY,'/.terraform.lock.hcl') }}
+          #path: ${{ runner.temp }}/_github_home/.terraform.d/plugin-cache #if use .terraformrc with cache
+          path: ${{ format('{0}{1}{2}{3}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS,'**') }}
           #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
-          key: ${{ runner.os }}-providers-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-1
+          key: ${{ runner.os }}-providers-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-2
           #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
 
       - name: ls -la
         run: |
+          tree ${{ runner.temp }}
           echo -e ":ls -la:\n"
-          ls -la
+          ls -la ${{ runner.temp }}/_github_home/.terraform.d/plugin-cache
+          ls -la .
           echo -e ":.terraform:\n"
           ls -la .terraform
           echo -e ":$PATH_TERRAFORM_PROVIDERS:\n"
@@ -83,21 +94,16 @@ jobs:
           [[ ! -d $PATH_TERRAFORM_PROVIDERS ]] ; echo $?
         continue-on-error: true
 
-      #если из кеша по какой-либо причине не были извлечены провайдеры, то запускаем Init заново
-      #если по какой-то причине не была пройдена Init ранее, то она пройдёт сейчас
+      #Init с кешированными данными
       - name: Terraform Init
-        if: ${{ steps.cache_providers.outputs.cache-hit != 'true' && steps.first_init.outcome != 'success' }}
+        if: ${{ steps.first_init.outcome != 'success' }}
         id: init
         run: |
+          echo "run terraform init with cached data"
           terraform init
           sleep 5
       #тут, наверное, нужно добавить какой-нибудь output для контроля, ведь этот шаг будет запускаться в случае аварии с кешем или с Init выше
     
-      - name: Initializing only Modules
-        if: ${{ steps.cache_providers.outputs.cache-hit == 'true' }}
-        run: terraform get
-    
-
       - name: ls -la
         run: |
           echo -e ":.terraform:\n"
