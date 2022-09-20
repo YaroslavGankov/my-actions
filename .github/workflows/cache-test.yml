@@ -52,7 +52,7 @@ jobs:
       - name: Added .terraformrc
         run: |
           mkdir -p $HOME/.terraform.d/plugin-cache
-          echo 'plugin_cache_dir   = "$HOME/.terraform.d/plugin-cache"' >> $HOME/.terraformrc
+          echo 'plugin_cache_dir   = "~/.terraform.d/plugin-cache"' >> ~/.terraformrc
       
       #сначала кешируем файл providers.tf и сверяем его
       - name: Check file providers.tf
@@ -64,7 +64,7 @@ jobs:
           #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
           path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
           #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
-          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-9
+          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-10
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
@@ -89,7 +89,7 @@ jobs:
           #path: ${{ runner.temp }}/_github_home/.terraform.d/plugin-cache #if use .terraformrc with cache
           path: |
             ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS) }}
-            $HOME/.terraform.d/plugin-cache
+            ~/.terraform.d/plugin-cache
           #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
           key: ${{ runner.os }}-providers-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-9
           #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
