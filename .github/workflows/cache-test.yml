@@ -29,6 +29,8 @@ jobs:
           echo "HOME:"
           #/home/runner
           echo $HOME
+          echo "env.HOME:"
+          echo ${{ env.HOME }}
           echo ${{ runner.temp }}
           echo "tree:"
           #/home/runner/work/_temp
@@ -48,7 +50,7 @@ jobs:
       #добавляем файл настройки для плагинов
       
       - name: Added .terraformrc
-        run: echo 'plugin_cache_dir   = "$HOME/.terraform.d/plugin-cache"' >> ${{ runner.temp }}/.terraformrc
+        run: echo 'plugin_cache_dir   = "$HOME/.terraform.d/plugin-cache"' >> $HOME/.terraformrc
       
       #сначала кешируем файл providers.tf и сверяем его
       - name: Check file providers.tf
@@ -83,14 +85,19 @@ jobs:
         uses: actions/cache@v3
         with:
           #path: ${{ runner.temp }}/_github_home/.terraform.d/plugin-cache #if use .terraformrc with cache
-          path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS) }}
+          path: |
+            ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS) }}
+            ${{ format('{0}{1}',env.HOME,'/.terraform.d/plugin-cache') }}
           #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
           key: ${{ runner.os }}-providers-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-4
           #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
 
       - name: ls -la
         run: |
-          tree -a $HOME
+          echo "tree HOME:"
+          tree $HOME
+          echo "ls -la HOME:"
+          ls -la $HOME
           tree -a $WORKING_DIRECTORY
           echo -e ":ls -la:\n"
           ls -la ${{ runner.temp }}/_github_home/.terraform.d/plugin-cache
