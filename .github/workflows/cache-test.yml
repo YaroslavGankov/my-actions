@@ -64,7 +64,7 @@ jobs:
           #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
           path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
           #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
-          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-6
+          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-7
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
@@ -83,7 +83,7 @@ jobs:
 
       #кешируем провайдеры. И кешируем их лишь в случае успешного выполнения first init
       - name: Cache_Terraform
-        if: ${{ steps.first_init.outputs.cache-hit == 'success' }}
+        if: ${{ steps.first_init.outcome == 'success' }}
         id: cache_providers
         uses: actions/cache@v3
         with:
@@ -92,7 +92,7 @@ jobs:
             ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS) }}
             ${{ format('{0}{1}',env.HOME,'/.terraform.d/plugin-cache') }}
           #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
-          key: ${{ runner.os }}-providers-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-6
+          key: ${{ runner.os }}-providers-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-7
           #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
 
       - name: ls -la
