@@ -50,7 +50,9 @@ jobs:
       #добавляем файл настройки для плагинов
       
       - name: Added .terraformrc
-        run: echo 'plugin_cache_dir   = "$HOME/.terraform.d/plugin-cache"' >> $HOME/.terraformrc
+        run: |
+          mkdir -p $HOME/.terraform.d/plugin-cache
+          echo 'plugin_cache_dir   = "$HOME/.terraform.d/plugin-cache"' >> $HOME/.terraformrc
       
       #сначала кешируем файл providers.tf и сверяем его
       - name: Check file providers.tf
@@ -75,12 +77,13 @@ jobs:
 
       - name: ls -la
         run: |
-          tree -a $HOME
+          tree -a $HOME | grep "terraform.d"
           tree -a $WORKING_DIRECTORY
         continue-on-error: true
 
-      #кешируем провайдеры
+      #кешируем провайдеры. И кешируем их лишь в случае успешного выполнения first init
       - name: Cache_Terraform
+        if: ${{ steps.first_init.outputs.cache-hit == 'success' }}
         id: cache_providers
         uses: actions/cache@v3
         with:
