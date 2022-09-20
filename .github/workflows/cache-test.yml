@@ -97,7 +97,7 @@ jobs:
       - name: ls -la
         run: |
           echo "tree HOME:"
-          tree $HOME
+          tree $HOME | grep -A 20 -B 20 "terraform.d"
           echo "ls -la HOME:"
           ls -la $HOME
           tree -a $WORKING_DIRECTORY
@@ -111,6 +111,10 @@ jobs:
           echo -e "\ntest -d:\n"
           [[ ! -d $PATH_TERRAFORM_PROVIDERS ]] ; echo $?
         continue-on-error: true
+
+      - name: tree -a $HOME/.terraform.d/plugin-cache
+        run: |
+          tree -a $HOME/.terraform.d/plugin-cache
 
       #Init с кешированными данными
       - name: Terraform Init
