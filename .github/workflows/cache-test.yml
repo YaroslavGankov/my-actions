@@ -83,7 +83,6 @@ jobs:
 
       #кешируем провайдеры. И кешируем их лишь в случае успешного выполнения first init
       - name: Cache_Terraform
-        if: ${{ steps.first_init.outcome == 'success' }}
         id: cache_providers
         uses: actions/cache@v3
         with:
