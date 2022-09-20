@@ -11,8 +11,8 @@ jobs:
       PATH_TERRAFORM_PROVIDERS: .terraform/providers/
       TF_ORIGIN_PROVIDER: providers.tf
       WORKING_DIRECTORY: tf-origins #my dir with tf-files
-#      TF_PLUGIN_CACHE_DIR: $HOME/.terraform.d/plugin-cache
-      TF_PLUGIN_CACHE_DIR2: ~/.terraform.d/plugin-cache
+      TF_PLUGIN_CACHE_DIR: .terraform.d/plugin-cache
+#      TF_PLUGIN_CACHE_DIR2: ~/.terraform.d/plugin-cache
     defaults:
       run:
         working-directory: ${{ env.WORKING_DIRECTORY }} 
@@ -28,6 +28,7 @@ jobs:
       # - name: Export TF_PLUGIN_CACHE_DIR
       #   run: export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"
 
+      # ~ $HOME - одинаковые
       - name: ls -la
         run: |
           pwd
@@ -41,10 +42,12 @@ jobs:
       #добавляем файл настройки для плагинов
       - name: Make dir $HOME/.terraform.d/plugin-cache
         run: |
-          export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"
           echo $TF_PLUGIN_CACHE_DIR
-          mkdir -p $TF_PLUGIN_CACHE_DIR2
-          ls -la $TF_PLUGIN_CACHE_DIR2
+          export TF_PLUGIN_CACHE_DIR=$HOME/$TF_PLUGIN_CACHE_DIR
+          echo "TF_PLUGIN_CACHE_DIR:"
+          echo $TF_PLUGIN_CACHE_DIR
+          mkdir -p $TF_PLUGIN_CACHE_DIR
+          ls -la $TF_PLUGIN_CACHE_DIR
           echo "ls -la $HOME"
           ls -la $HOME
 
