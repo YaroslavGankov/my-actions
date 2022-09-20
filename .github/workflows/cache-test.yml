@@ -11,7 +11,7 @@ jobs:
       PATH_TERRAFORM_PROVIDERS: .terraform/providers/
       TF_ORIGIN_PROVIDER: providers.tf
       WORKING_DIRECTORY: tf-origins #my dir with tf-files
-#      TF_PLUGIN_CACHE_DIR: .terraform.d/plugin-cache
+      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
 #      TF_PLUGIN_CACHE_DIR2: ~/.terraform.d/plugin-cache
     defaults:
       run:
@@ -42,8 +42,6 @@ jobs:
       #добавляем папку для плагинов
       - name: Make dir $HOME/.terraform.d/plugin-cache
         run: |
-          echo $TF_PLUGIN_CACHE_DIR
-          export TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache
           echo "TF_PLUGIN_CACHE_DIR:"
           echo $TF_PLUGIN_CACHE_DIR
           mkdir -p $TF_PLUGIN_CACHE_DIR
@@ -61,7 +59,7 @@ jobs:
           #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
           path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
           #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
-          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-21
+          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-22
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
@@ -88,7 +86,7 @@ jobs:
             ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS) }}
             $TF_PLUGIN_CACHE_DIR
           #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
-          key: ${{ runner.os }}-providers-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-21
+          key: ${{ runner.os }}-providers-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-22
           #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
 
       - name: ls -la
