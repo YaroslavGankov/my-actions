@@ -42,7 +42,7 @@ jobs:
       #добавляем файл настройки для плагинов
       - name: Make dir $HOME/.terraform.d/plugin-cache
         run: |
-          export TF_PLUGIN_CACHE_DIR="$TF_PLUGIN_CACHE_DIR"
+          export TF_PLUGIN_CACHE_DIR=$TF_PLUGIN_CACHE_DIR
           echo $TF_PLUGIN_CACHE_DIR
           mkdir -p $TF_PLUGIN_CACHE_DIR
           ls -la $TF_PLUGIN_CACHE_DIR
