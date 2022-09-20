@@ -32,6 +32,7 @@ jobs:
         run: |
           pwd
           echo ~
+          echo $HOME
           echo "echo TF_PLUGIN_CACHE_DIR:"
           echo $TF_PLUGIN_CACHE_DIR
           echo $TF_PLUGIN_CACHE_DIR2
