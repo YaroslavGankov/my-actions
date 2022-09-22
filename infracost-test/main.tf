@@ -61,7 +61,7 @@ module "create_SG_public" {
 # CREATE INSTANCES
 module "create_simple_public_instance" {
   source = "./layer3.Servers"
-  number_of_servers = 1
+  number_of_servers = 8
   file_for_user_data = "user_data1.sh"
   subnet_ids = module.create_skiff_VPC_and_subnets.public_subnet_ids
   sg_id = [module.create_SG_public.webserver_sg_id]
