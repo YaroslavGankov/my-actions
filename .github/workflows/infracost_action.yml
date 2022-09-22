@@ -105,7 +105,7 @@ jobs:
           tree $HOME
 
       - name: Infracost. Delete dir with 'main' branch
-        run: rm -r checkout_main/
+        run: rm -r $GITHUB_WORKSPACE/checkout_main
 
       - name: Infracost. Diff cost for current branch
         run: |
