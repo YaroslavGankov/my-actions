@@ -113,6 +113,7 @@ jobs:
           echo "ls -la:"
           ls -la $HOME
           ls -la $HOME/work
+          ls -la $HOME/work/my-actions
           echo "tree:"
           tree $HOME
 
