@@ -64,7 +64,7 @@ jobs:
       - name: Infracost. Checkout main branch for diff
         uses: actions/checkout@v2
         with:
-          path: '../checkout_main'
+          path: 'checkout_main'
           ref: '${{ github.event.pull_request.base.ref }}'
 
 
@@ -85,9 +85,27 @@ jobs:
       #estimate costs for the main branch
       - name: Infracost. Cost for main branch
         run: |
-          infracost breakdown --path=$GITHUB_WORKSPACE/../checkout_main/$WORKING_DIRECTORY \
+          infracost breakdown --path=$GITHUB_WORKSPACE/checkout_main/$WORKING_DIRECTORY \
                               --format=json \
                               --out-file=/tmp/infracost-main.json
+
+      - name: Debug 2 (echo and other)
+        run: |
+          echo "pwd:"
+          pwd
+          echo "echo GITHUB_WORKSPACE:"
+          echo $GITHUB_WORKSPACE
+          echo "ls -la:"
+          ls -la
+          ls -la $HOME
+          ls -la $HOME/work
+          ls -la $HOME/work/my-actions
+          ls -la $HOME/work/my-actions/my-actions
+          echo "tree:"
+          tree $HOME
+
+      - name: Infracost. Delete dir with 'main' branch
+        run: rm -r checkout_main
 
       - name: Infracost. Diff cost for current branch
         run: |
@@ -104,7 +122,7 @@ jobs:
                                      --pull-request=${{github.event.pull_request.number}} \
                                      --behavior=update
 
-      - name: Debug 2 (echo and other)
+      - name: Debug 3 (echo and other)
         run: |
           echo "pwd:"
           pwd
@@ -117,6 +135,7 @@ jobs:
           ls -la $HOME/work/my-actions
           echo "tree:"
           tree $HOME
+        continue-on-error: true
 
       # - name: Terraform Apply
       #   run: terraform apply -auto-approve -input=false
