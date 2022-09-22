@@ -53,26 +53,48 @@ jobs:
         run: terraform plan -no-color -input=false
 
 
-      - name: Setup Infracost
+      - name: Infracost. Setup
         uses: infracost/actions/setup@v2
         # See https://github.com/infracost/actions/tree/master/setup for other inputs
         # If you can't use this action, see Docker images in https://infracost.io/cicd
         with:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
 
+      #checkout main branch and
+      - name: Infracost. Preparing main branch for diff
+        uses: actions/checkout@v2
+        with:
+          path: 'checkout_main'
+          ref: '${{ github.event.pull_request.base.ref }}'
 
-      - name: Generate Infracost cost estimate baseline to stdout
-        run: |
-          infracost breakdown --path=.
 
-      - name: Generate Infracost cost estimate baseline to file
+      - name: Debug 1 (echo and other)
         run: |
-          infracost breakdown --path=. \
+          echo "pwd:"
+          pwd
+          echo "echo GITHUB_WORKSPACE:"
+          echo $GITHUB_WORKSPACE
+          echo "ls -la:"
+          ls -la
+          echo "tree:"
+          tree
+          
+      
+      #estimate costs for the main branch
+      - name: Infracost. Cost for main branch
+        run: |
+          infracost breakdown --path=$GITHUB_WORKSPACE/checkout_main/$WORKING_DIRECTORY \
                               --format=json \
-                              --out-file=/tmp/infracost.json
+                              --out-file=/tmp/infracost-main.json
 
+      - name: Infracost. Diff cost for current branch
+        run: |
+          infracost diff --path=. \
+                          --format=json \
+                          --compare-to=/tmp/infracost-main.json
+                          --out-file=/tmp/infracost.json
 
-      - name: Post Infracost comment
+      - name: Infracost. Post comment <- file
         run: |
             infracost comment github --path=/tmp/infracost.json \
                                      --repo=$GITHUB_REPOSITORY \
@@ -80,5 +102,16 @@ jobs:
                                      --pull-request=${{github.event.pull_request.number}} \
                                      --behavior=update
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false
+      - name: Debug 2 (echo and other)
+        run: |
+          echo "pwd:"
+          pwd
+          echo "echo GITHUB_WORKSPACE:"
+          echo $GITHUB_WORKSPACE
+          echo "ls -la:"
+          ls -la
+          echo "tree:"
+          tree
+
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve -input=false
