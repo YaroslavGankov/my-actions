@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"create_skiff_VPC_and_subnets","Source":"./layer1.Network","Dir":"layer1.Network"},{"Key":"create_SG_public","Source":"./layer2.SG","Dir":"layer2.SG"},{"Key":"create_simple_public_instance","Source":"./layer3.Servers","Dir":"layer3.Servers"}]}
