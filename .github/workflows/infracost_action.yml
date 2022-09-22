@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       WORKING_DIRECTORY: infracost-test
-      INFRACOST_ENABLE_CLOUD: false
+      INFRACOST_ENABLE_CLOUD: true
     defaults:
       run:
         working-directory: ${{ env.WORKING_DIRECTORY }}
