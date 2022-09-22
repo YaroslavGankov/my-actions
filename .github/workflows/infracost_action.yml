@@ -13,10 +13,12 @@ jobs:
   Test_Infracost:
     name: "Test Infracost"
     runs-on: ubuntu-latest
+    env:
+      WORKING_DIRECTORY: infracost-test
     defaults:
-      
       run:
-        working-directory: infracost-test
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
     steps:
       - uses: actions/checkout@v3
 
@@ -58,5 +60,25 @@ jobs:
         with:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
 
-      # - name: Terraform Apply
-      #   run: terraform apply -auto-approve -input=false
+
+      - name: Generate Infracost cost estimate baseline to stdout
+        run: |
+          infracost breakdown --path=.
+
+      - name: Generate Infracost cost estimate baseline to file
+        run: |
+          infracost breakdown --path=. \
+                              --format=json \
+                              --out-file=/tmp/infracost-base.json
+
+
+      - name: Post Infracost comment
+        run: |
+            infracost comment github --path=/tmp/infracost.json \
+                                     --repo=$GITHUB_REPOSITORY \
+                                     --github-token=${{github.token}} \
+                                     --pull-request=${{github.event.pull_request.number}} \
+                                     --behavior=update
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -input=false
