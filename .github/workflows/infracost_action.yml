@@ -111,7 +111,7 @@ jobs:
           echo "echo GITHUB_WORKSPACE:"
           echo $GITHUB_WORKSPACE
           echo "ls -la:"
-          ls -la
+          ls -la $HOME
           echo "tree:"
           tree
 
