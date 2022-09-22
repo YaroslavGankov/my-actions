@@ -61,7 +61,7 @@ jobs:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
 
       #checkout main branch and
-      - name: Infracost. Preparing main branch for diff
+      - name: Infracost. Checkout main branch for diff
         uses: actions/checkout@v2
         with:
           path: 'checkout_main'
@@ -74,10 +74,12 @@ jobs:
           pwd
           echo "echo GITHUB_WORKSPACE:"
           echo $GITHUB_WORKSPACE
+          echo "echo HOME:"
+          echo $HOME
           echo "ls -la:"
           ls -la
           echo "tree:"
-          tree
+          tree $HOME
           
       
       #estimate costs for the main branch
@@ -91,7 +93,7 @@ jobs:
         run: |
           infracost diff --path=. \
                           --format=json \
-                          --compare-to=/tmp/infracost-main.json
+                          --compare-to=/tmp/infracost-main.json \
                           --out-file=/tmp/infracost.json
 
       - name: Infracost. Post comment <- file
