@@ -1,4 +1,4 @@
-name: "Test Infracost"
+name: "Test Infracost111"
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ jobs:
       INFRACOST_ENABLE_CLOUD: false
     defaults:
       run:
-        working-directory: ${{ env.WORKING_DIRECTORY }}
+        working-directory: infracost-test/
 
     steps:
       - uses: actions/checkout@v3
