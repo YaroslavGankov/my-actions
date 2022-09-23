@@ -8,7 +8,7 @@ on:
     paths:
         - 'infracost-test/**'
         - '.github/workflows/infracost_action.yml'
-  
+  <
 jobs:
   Test_Infracost:
     name: "Test Infracost"
@@ -86,9 +86,9 @@ jobs:
       #estimate costs for the main branch
       - name: Infracost. Cost for main branch
         run: |
-          infracost breakdown --path=$GITHUB_WORKSPACE/checkout_main/$WORKING_DIRECTORY \
-                              --format=json \
-                              --out-file=/tmp/infracost-main.json
+          infracost breakdown --path="$GITHUB_WORKSPACE/checkout_main/$WORKING_DIRECTORY" \
+                              --format="json" \
+                              --out-file="/tmp/infracost-main.json"
 
       - name: Debug 2 (echo and other)
         run: |
@@ -105,23 +105,23 @@ jobs:
           echo "tree:"
           tree $HOME
 
-      - name: Infracost. Delete dir with 'main' branch
-        run: rm -r $GITHUB_WORKSPACE/checkout_main
+      - name: Infracost. Delete dir main branch
+        run: rm -r "$GITHUB_WORKSPACE/checkout_main"
 
       - name: Infracost. Diff cost for current branch
         run: |
-          infracost diff --path=. \
-                          --format=json \
-                          --compare-to=/tmp/infracost-main.json \
-                          --out-file=/tmp/infracost.json
+          infracost diff --path="." \
+                          --format="json" \
+                          --compare-to="/tmp/infracost-main.json" \
+                          --out-file="/tmp/infracost.json"
 
       - name: Infracost. Post comment to PR
         run: |
-            infracost comment github --path=/tmp/infracost.json \
-                                     --repo=$GITHUB_REPOSITORY \
+            infracost comment github --path="/tmp/infracost.json" \
+                                     --repo="$GITHUB_REPOSITORY" \
                                      --github-token=${{github.token}} \
                                      --pull-request=${{github.event.pull_request.number}} \
-                                     --behavior=update
+                                     --behavior="update"
 
       - name: Debug 3 (echo and other)
         run: |
