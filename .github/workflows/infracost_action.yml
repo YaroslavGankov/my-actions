@@ -1,0 +1,141 @@
+name: "Test Infracost"
+
+on:
+  workflow_dispatch:
+  
+  pull_request:
+    branches: [ main ]
+    paths:
+        - 'infracost-test/**'
+        - '.github/workflows/infracost_action.yml'
+jobs:
+  Test_Infracost:
+    name: "Test Infracost"
+    runs-on: ubuntu-latest
+    env:
+      WORKING_DIRECTORY: infracost-test
+      INFRACOST_ENABLE_CLOUD: false
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: true
+          terraform_version: 1.2.5
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check -diff
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false
+
+
+      - name: Infracost. Setup
+        uses: infracost/actions/setup@v2
+        # See https://github.com/infracost/actions/tree/master/setup for other inputs
+        # If you can't use this action, see Docker images in https://infracost.io/cicd
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+
+      #checkout main branch and
+      - name: Infracost. Checkout main branch for diff
+        uses: actions/checkout@v2
+        with:
+          path: 'checkout_main'
+          ref: '${{ github.event.pull_request.base.ref }}'
+
+
+      - name: Debug 1 (echo and other)
+        run: |
+          echo "pwd:"
+          pwd
+          echo "echo GITHUB_WORKSPACE:"
+          echo $GITHUB_WORKSPACE
+          echo "echo HOME:"
+          echo $HOME
+          echo "ls -la:"
+          ls -la
+          echo "tree:"
+          tree $HOME
+          
+      
+      #estimate costs for the main branch
+      - name: Infracost. Cost for main branch
+        run: |
+          infracost breakdown --path="$GITHUB_WORKSPACE/checkout_main/$WORKING_DIRECTORY" \
+                              --format="json" \
+                              --out-file="/tmp/infracost-main.json"
+
+      - name: Debug 2 (echo and other)
+        run: |
+          echo "pwd:"
+          pwd
+          echo "echo GITHUB_WORKSPACE:"
+          echo $GITHUB_WORKSPACE
+          echo "ls -la:"
+          ls -la
+          ls -la $HOME
+          ls -la $HOME/work
+          ls -la $HOME/work/my-actions
+          ls -la $HOME/work/my-actions/my-actions
+          echo "tree:"
+          tree $HOME
+
+      - name: Infracost. Delete dir main branch
+        run: rm -r "$GITHUB_WORKSPACE/checkout_main"
+
+      - name: Infracost. Diff cost for current branch
+        run: |
+          infracost diff --path="." \
+                          --format="json" \
+                          --compare-to="/tmp/infracost-main.json" \
+                          --out-file="/tmp/infracost.json"
+
+      - name: Infracost. Post comment to PR
+        run: |
+            infracost comment github --path="/tmp/infracost.json" \
+                                     --repo="$GITHUB_REPOSITORY" \
+                                     --github-token=${{github.token}} \
+                                     --pull-request=${{github.event.pull_request.number}} \
+                                     --behavior="update"
+
+      - name: Debug 3 (echo and other)
+        run: |
+          echo "pwd:"
+          pwd
+          echo "echo GITHUB_WORKSPACE:"
+          echo $GITHUB_WORKSPACE
+          echo "ls -la:"
+          ls -la
+          ls -la $HOME
+          ls -la $HOME/work
+          ls -la $HOME/work/my-actions
+          echo "tree:"
+          tree $HOME
+        continue-on-error: true
+
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve -input=false
