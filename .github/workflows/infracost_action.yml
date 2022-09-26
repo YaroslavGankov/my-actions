@@ -92,13 +92,12 @@ jobs:
           export USAGEFILE="$WORKING_DIRECTORY_LOCAL/infracost_usage.yml"; \
           export OUTPUT_FILE_INFRACOST="/tmp/infracost-main.json"; \
           if [ -e "$USAGEFILE" ] ; then \
-          infracost breakdown --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" ; \
+          infracost breakdown --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
+                                        --format="json" \
+                                        --out-file="$OUTPUT_FILE_INFRACOST"; \
           if [ $? == 0 ] ; then \
           echo "Correct file found: '$USAGEFILE'"; \
           echo '::set-output name=FILEEXIST::yes'; \
-          infracost breakdown --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
-                                        --format="json" \
-                                        --out-file="$OUTPUT_FILE_INFRACOST" ; \
           else
           echo "Incorrect usage-file: '$USAGEFILE'. Processing without usage-file"; \
           echo '::set-output name=FILEEXIST::incorrect'; \
@@ -147,10 +146,6 @@ jobs:
           if [ $? == 0 ] ; then \
           echo "Correct file found: '$USAGEFILE'"; \
           echo '::set-output name=FILEEXIST::yes'; \
-          infracost diff --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
-                                        --format="json" \
-                                        --compare-to="$COMPARE_FILE_INFRACOST" \
-                                        --out-file="$OUTPUT_FILE_INFRACOST" ; \
           else
           echo "Incorrect usage-file: '$USAGEFILE'. Processing without usage-file"; \
           echo '::set-output name=FILEEXIST::incorrect'; \
