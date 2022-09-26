@@ -24,7 +24,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -71,18 +70,18 @@ jobs:
           ref: '${{ github.event.pull_request.base.ref }}'
 
 
-      - name: Debug 1 (echo and other)
-        run: |
-          echo "pwd:"
-          pwd
-          echo "echo GITHUB_WORKSPACE:"
-          echo $GITHUB_WORKSPACE
-          echo "echo HOME:"
-          echo $HOME
-          echo "ls -la:"
-          ls -la
-          echo "tree:"
-          tree $HOME
+      # - name: Debug 1 (echo and other)
+      #   run: |
+      #     echo "pwd:"
+      #     pwd
+      #     echo "echo GITHUB_WORKSPACE:"
+      #     echo $GITHUB_WORKSPACE
+      #     echo "echo HOME:"
+      #     echo $HOME
+      #     echo "ls -la:"
+      #     ls -la
+      #     echo "tree:"
+      #     tree $HOME
           
       
       #estimate costs for the main branch
@@ -114,20 +113,20 @@ jobs:
                               --out-file="/tmp/infracost-main.json"
           fi
 
-      - name: Debug 2 (echo and other)
-        run: |
-          echo "pwd:"
-          pwd
-          echo "echo GITHUB_WORKSPACE:"
-          echo $GITHUB_WORKSPACE
-          echo "ls -la:"
-          ls -la
-          ls -la $HOME
-          ls -la $HOME/work
-          ls -la $HOME/work/my-actions
-          ls -la $HOME/work/my-actions/my-actions
-          echo "tree:"
-          tree $HOME
+      # - name: Debug 2 (echo and other)
+      #   run: |
+      #     echo "pwd:"
+      #     pwd
+      #     echo "echo GITHUB_WORKSPACE:"
+      #     echo $GITHUB_WORKSPACE
+      #     echo "ls -la:"
+      #     ls -la
+      #     ls -la $HOME
+      #     ls -la $HOME/work
+      #     ls -la $HOME/work/my-actions
+      #     ls -la $HOME/work/my-actions/my-actions
+      #     echo "tree:"
+      #     tree $HOME
 
       - name: Infracost. Delete dir main branch
         run: rm -r "$GITHUB_WORKSPACE/checkout_main"
@@ -177,27 +176,27 @@ jobs:
 
       - name: Infracost. Warnings
         run: |
-          echo "Usage-file for main branch: {{ steps.infracost_main_branch.outputs.FILEEXIST }}"
-          echo "Usage-file for PR: {{ steps.infracost_diff_with_pr.outputs.FILEEXIST }}"
-          if [ steps.infracost_main_branch.outputs.FILEEXIST != "yes"] || [ steps.infracost_diff_with_pr.outputs.FILEEXIST != "yes"]; then \
+          echo "Usage-file for main branch: ${{ steps.infracost_main_branch.outputs.FILEEXIST }}"
+          echo "Usage-file for PR: ${{ steps.infracost_diff_with_pr.outputs.FILEEXIST }}"
+          if [ ${{ steps.infracost_main_branch.outputs.FILEEXIST }} != "yes" ] || [ ${{ steps.infracost_diff_with_pr.outputs.FILEEXIST }} != "yes"]; then \
           exit 1 ; \
           fi
         continue-on-error: true
 
-      - name: Debug 3 (echo and other)
-        run: |
-          echo "pwd:"
-          pwd
-          echo "echo GITHUB_WORKSPACE:"
-          echo $GITHUB_WORKSPACE
-          echo "ls -la:"
-          ls -la
-          ls -la $HOME
-          ls -la $HOME/work
-          ls -la $HOME/work/my-actions
-          echo "tree:"
-          tree $HOME
-        continue-on-error: true
+      # - name: Debug 3 (echo and other)
+      #   run: |
+      #     echo "pwd:"
+      #     pwd
+      #     echo "echo GITHUB_WORKSPACE:"
+      #     echo $GITHUB_WORKSPACE
+      #     echo "ls -la:"
+      #     ls -la
+      #     ls -la $HOME
+      #     ls -la $HOME/work
+      #     ls -la $HOME/work/my-actions
+      #     echo "tree:"
+      #     tree $HOME
+      #   continue-on-error: true
 
       # - name: Terraform Apply
       #   run: terraform apply -auto-approve -input=false
