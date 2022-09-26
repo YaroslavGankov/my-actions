@@ -90,6 +90,7 @@ jobs:
         run: |
           export WORKING_DIRECTORY_LOCAL="$GITHUB_WORKSPACE/checkout_main/$WORKING_DIRECTORY" ; \
           export USAGEFILE="$WORKING_DIRECTORY_LOCAL/infracost_usage.yml"; \
+          export OUTPUT_FILE_INFRACOST="/tmp/infracost-main.json" \
           if [ -e "$USAGEFILE" ] ; then \
           infracost breakdown --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" ; \
           if [ $? == 0 ] ; then \
@@ -97,20 +98,20 @@ jobs:
           echo '::set-output name=FILEEXIST::yes'; \
           infracost breakdown --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
                                         --format="json" \
-                                        --out-file="/tmp/infracost-main.json" ; \
+                                        --out-file="$OUTPUT_FILE_INFRACOST" ; \
           else
           echo "Incorrect usage-file: '$USAGEFILE'. Processing without usage-file"; \
           echo '::set-output name=FILEEXIST::incorrect'; \
           infracost breakdown --path="$WORKING_DIRECTORY_LOCAL" \
                               --format="json" \
-                              --out-file="/tmp/infracost-main.json"
+                              --out-file="$OUTPUT_FILE_INFRACOST" ; \
           fi
           else \
           echo "No usage-file found: '$USAGEFILE'. Processing without usage-file"; \
           echo '::set-output name=FILEEXIST::no'; \
           infracost breakdown --path="$WORKING_DIRECTORY_LOCAL" \
                               --format="json" \
-                              --out-file="/tmp/infracost-main.json"
+                              --out-file="$OUTPUT_FILE_INFRACOST"
           fi
 
       # - name: Debug 2 (echo and other)
@@ -136,33 +137,35 @@ jobs:
         run: |
           export WORKING_DIRECTORY_LOCAL="." ; \
           export USAGEFILE="$WORKING_DIRECTORY_LOCAL/infracost_usage.yml"; \
+          export COMPARE_FILE_INFRACOST="/tmp/infracost-main.json" \
+          export OUTPUT_FILE_INFRACOST="/tmp/infracost.json" \
           if [ -e "$USAGEFILE" ] ; then \
           infracost diff --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
                                         --format="json" \
-                                        --compare-to="/tmp/infracost-main.json" \
-                                        --out-file="/tmp/infracost.json" ; \
+                                        --compare-to="$COMPARE_FILE_INFRACOST" \
+                                        --out-file="$OUTPUT_FILE_INFRACOST" ; \
           if [ $? == 0 ] ; then \
           echo "Correct file found: '$USAGEFILE'"; \
           echo '::set-output name=FILEEXIST::yes'; \
           infracost diff --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
                                         --format="json" \
-                                        --compare-to="/tmp/infracost-main.json" \
-                                        --out-file="/tmp/infracost.json" ; \
+                                        --compare-to="$COMPARE_FILE_INFRACOST" \
+                                        --out-file="$OUTPUT_FILE_INFRACOST" ; \
           else
           echo "Incorrect usage-file: '$USAGEFILE'. Processing without usage-file"; \
           echo '::set-output name=FILEEXIST::incorrect'; \
           infracost diff --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
                                         --format="json" \
-                                        --compare-to="/tmp/infracost-main.json" \
-                                        --out-file="/tmp/infracost.json" ; \
+                                        --compare-to="$COMPARE_FILE_INFRACOST" \
+                                        --out-file="$OUTPUT_FILE_INFRACOST" ; \
           fi
           else \
           echo "No usage-file found: '$USAGEFILE'. Processing without usage-file"; \
           echo '::set-output name=FILEEXIST::no'; \
           infracost diff --path="$WORKING_DIRECTORY_LOCAL" \
                               --format="json" \
-                              --compare-to="/tmp/infracost-main.json" \
-                              --out-file="/tmp/infracost.json"
+                              --compare-to="$COMPARE_FILE_INFRACOST" \
+                              --out-file="$OUTPUT_FILE_INFRACOST" ; \
           fi
 
       - name: Infracost. Post comment to PR
