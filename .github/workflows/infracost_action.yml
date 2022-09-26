@@ -95,7 +95,8 @@ jobs:
           infracost breakdown --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
                                         --format="json" \
                                         --out-file="$OUTPUT_FILE_INFRACOST"; \
-          if [ "$?" -ne 0 ] ; then \
+          export out_command="$?" ; \
+          if [ "$out_command" -ne 0 ] ; then \
           echo "Correct file found: '$USAGEFILE'"; \
           echo '::set-output name=FILEEXIST::yes'; \
           else
@@ -143,7 +144,8 @@ jobs:
                                         --format="json" \
                                         --compare-to="$COMPARE_FILE_INFRACOST" \
                                         --out-file="$OUTPUT_FILE_INFRACOST" ; \
-          if [ "$?" -ne 0 ] ; then \
+          export out_command="$?" ; \
+          if [ "$out_command" -ne 0 ] ; then \
           echo "Correct file found: '$USAGEFILE'"; \
           echo '::set-output name=FILEEXIST::yes'; \
           else
