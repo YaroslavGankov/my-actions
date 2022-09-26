@@ -178,7 +178,7 @@ jobs:
         run: |
           echo "Usage-file for main branch: ${{ steps.infracost_main_branch.outputs.FILEEXIST }}"
           echo "Usage-file for PR: ${{ steps.infracost_diff_with_pr.outputs.FILEEXIST }}"
-          if [ "${{ steps.infracost_main_branch.outputs.FILEEXIST }}"" != "yes" ] || [ "${{ steps.infracost_diff_with_pr.outputs.FILEEXIST }}" != "yes"]; then \
+          if [ "${{ steps.infracost_main_branch.outputs.FILEEXIST }}" != "yes" ] || [ "${{ steps.infracost_diff_with_pr.outputs.FILEEXIST }}" != "yes"]; then \
           exit 1 ; \
           fi
         continue-on-error: true
