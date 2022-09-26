@@ -139,6 +139,9 @@ jobs:
           export USAGEFILE="$WORKING_DIRECTORY_LOCAL/infracost_usage.yml"; \
           if [ -e "$USAGEFILE" ] ; then \
           infracost diff --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
+                                        --format="json" \
+                                        --compare-to="/tmp/infracost-main.json" \
+                                        --out-file="/tmp/infracost.json" ; \
           if [ $? == 0 ] ; then \
           echo "Correct file found: '$USAGEFILE'"; \
           echo '::set-output name=FILEEXIST::yes'; \
@@ -159,7 +162,7 @@ jobs:
           echo '::set-output name=FILEEXIST::no'; \
           infracost diff --path="$WORKING_DIRECTORY_LOCAL" \
                               --format="json" \
-                              --out-file="/tmp/infracost.json" ; \
+                              --out-file="/tmp/infracost.json"
           fi
 
       - name: Infracost. Post comment to PR
