@@ -97,7 +97,7 @@ jobs:
           echo '::set-output name=FILEEXIST::yes'; \
           infracost breakdown --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
                                         --format="json" \
-                                        --out-file="infracost-main.json" ; \
+                                        --out-file="/tmp/infracost-main.json" ; \
           else
           echo "Incorrect usage-file: '$USAGEFILE'. Processing without usage-file"; \
           echo '::set-output name=FILEEXIST::incorrect'; \
