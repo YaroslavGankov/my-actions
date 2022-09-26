@@ -90,7 +90,7 @@ jobs:
         run: |
           export WORKING_DIRECTORY_LOCAL="$GITHUB_WORKSPACE/checkout_main/$WORKING_DIRECTORY" ; \
           export USAGEFILE="$WORKING_DIRECTORY_LOCAL/infracost_usage.yml"; \
-          export OUTPUT_FILE_INFRACOST="/tmp/infracost-main.json" \
+          export OUTPUT_FILE_INFRACOST="/tmp/infracost-main.json"; \
           if [ -e "$USAGEFILE" ] ; then \
           infracost breakdown --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" ; \
           if [ $? == 0 ] ; then \
@@ -137,8 +137,8 @@ jobs:
         run: |
           export WORKING_DIRECTORY_LOCAL="." ; \
           export USAGEFILE="$WORKING_DIRECTORY_LOCAL/infracost_usage.yml"; \
-          export COMPARE_FILE_INFRACOST="/tmp/infracost-main.json" \
-          export OUTPUT_FILE_INFRACOST="/tmp/infracost.json" \
+          export COMPARE_FILE_INFRACOST="/tmp/infracost-main.json"; \
+          export OUTPUT_FILE_INFRACOST="/tmp/infracost.json"; \
           if [ -e "$USAGEFILE" ] ; then \
           infracost diff --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
                                         --format="json" \
