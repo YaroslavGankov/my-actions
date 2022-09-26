@@ -162,10 +162,12 @@ jobs:
           echo '::set-output name=FILEEXIST::no'; \
           infracost diff --path="$WORKING_DIRECTORY_LOCAL" \
                               --format="json" \
+                              --compare-to="/tmp/infracost-main.json" \
                               --out-file="/tmp/infracost.json"
           fi
 
       - name: Infracost. Post comment to PR
+        if: github.event_name == 'pull_request'
         run: |
             infracost comment github --path="/tmp/infracost.json" \
                                      --repo="$GITHUB_REPOSITORY" \
