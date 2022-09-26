@@ -1,6 +1,7 @@
 name: "Test Infracost111222"
 #3333
 #4444
+#5555
 
 on:
   workflow_dispatch:
@@ -86,10 +87,32 @@ jobs:
       
       #estimate costs for the main branch
       - name: Infracost. Cost for main branch
+        id: infracost_main_branch
         run: |
-          infracost breakdown --path="$GITHUB_WORKSPACE/checkout_main/$WORKING_DIRECTORY" \
+          export WORKING_DIRECTORY_LOCAL="$GITHUB_WORKSPACE/checkout_main/$WORKING_DIRECTORY" ; \
+          export USAGEFILE="$WORKING_DIRECTORY_LOCAL/infracost_usage.yml"; \
+          if [ -e "$USAGEFILE" ] ; then \
+          infracost breakdown --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" ; \
+          if [ $? == 0 ] ; then \
+          echo "Correct file found: '$USAGEFILE'"; \
+          echo '::set-output name=FILEEXIST::yes'; \
+          infracost breakdown --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
+                                        --format="json" \
+                                        --out-file="infracost-main.json" ; \
+          else
+          echo "Incorrect usage-file: '$USAGEFILE'. Processing without usage-file"; \
+          echo '::set-output name=FILEEXIST::incorrect'; \
+          infracost breakdown --path="$WORKING_DIRECTORY_LOCAL" \
                               --format="json" \
                               --out-file="/tmp/infracost-main.json"
+          fi
+          else \
+          echo "No usage-file found: '$USAGEFILE'. Processing without usage-file"; \
+          echo '::set-output name=FILEEXIST::no'; \
+          infracost breakdown --path="$WORKING_DIRECTORY_LOCAL" \
+                              --format="json" \
+                              --out-file="/tmp/infracost-main.json"
+          fi
 
       - name: Debug 2 (echo and other)
         run: |
@@ -110,11 +133,34 @@ jobs:
         run: rm -r "$GITHUB_WORKSPACE/checkout_main"
 
       - name: Infracost. Diff cost for current branch
+        id: infracost_diff_with_pr
         run: |
-          infracost diff --path="." \
-                          --format="json" \
-                          --compare-to="/tmp/infracost-main.json" \
-                          --out-file="/tmp/infracost.json"
+          export WORKING_DIRECTORY_LOCAL="." ; \
+          export USAGEFILE="$WORKING_DIRECTORY_LOCAL/infracost_usage.yml"; \
+          if [ -e "$USAGEFILE" ] ; then \
+          infracost diff --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
+          if [ $? == 0 ] ; then \
+          echo "Correct file found: '$USAGEFILE'"; \
+          echo '::set-output name=FILEEXIST::yes'; \
+          infracost diff --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
+                                        --format="json" \
+                                        --compare-to="/tmp/infracost-main.json" \
+                                        --out-file="/tmp/infracost.json" ; \
+          else
+          echo "Incorrect usage-file: '$USAGEFILE'. Processing without usage-file"; \
+          echo '::set-output name=FILEEXIST::incorrect'; \
+          infracost diff --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
+                                        --format="json" \
+                                        --compare-to="/tmp/infracost-main.json" \
+                                        --out-file="/tmp/infracost.json" ; \
+          fi
+          else \
+          echo "No usage-file found: '$USAGEFILE'. Processing without usage-file"; \
+          echo '::set-output name=FILEEXIST::no'; \
+          infracost diff --path="$WORKING_DIRECTORY_LOCAL" \
+                              --format="json" \
+                              --out-file="/tmp/infracost.json" ; \
+          fi
 
       - name: Infracost. Post comment to PR
         run: |
@@ -123,6 +169,15 @@ jobs:
                                      --github-token=${{github.token}} \
                                      --pull-request=${{github.event.pull_request.number}} \
                                      --behavior="update"
+
+      - name: Infracost. Warnings
+        run: |
+          echo "Usage-file for main branch: {{ steps.infracost_main_branch.outputs.FILEEXIST }}"
+          echo "Usage-file for PR: {{ steps.infracost_diff_with_pr.outputs.FILEEXIST }}"
+          if [ steps.infracost_main_branch.outputs.FILEEXIST != "yes"] || [ steps.infracost_diff_with_pr.outputs.FILEEXIST != "yes"]; then \
+          exit 1 ; \
+          fi
+        continue-on-error: true
 
       - name: Debug 3 (echo and other)
         run: |
