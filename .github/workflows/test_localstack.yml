@@ -1,10 +1,10 @@
 name: Localstack_Testing
 on:
-  workflow_dispatch:
-  push:
-    branches: [ master, main ]
+  # push:
+  #   branches: [ master, main ]
   pull_request:
     branches: [ master, main ]
+  workflow_dispatch:
   
 
 jobs:
@@ -39,11 +39,12 @@ jobs:
           echo $PATH
           echo "install pip:"
           sudo apt install pip
+        continue-on-error: true
 
       - name: localstack. Setup
         run: |
           echo "install localstack"
-          python3 -m pip install localstack
+          pip install localstack
           pip install terraform-local
 
       - name: localstack. Start
