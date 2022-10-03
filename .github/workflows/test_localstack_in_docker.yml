@@ -1,4 +1,3 @@
-#working version with 'pip install localstack'
 name: Localstack_Testing
 on:
   # push:
@@ -45,14 +44,12 @@ jobs:
       #     sudo apt install pip
       #   continue-on-error: true
 
-      - name: localstack. Setup
+      - name: terraform-local. Setup
         run: |
-          echo "install localstack"
-          pip install localstack
           pip install terraform-local
 
       - name: localstack. Start
-        run: localstack start -d
+        run: docker run -p 4566:4566 -p 4510-4559:4510-4559 -d localstack/localstack
 
       - name: Terraform Format
         id: fmt
