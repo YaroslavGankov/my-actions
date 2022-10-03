@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: '3.10'
           cache: 'pip' # caching pip dependencies
-      - run: pip install -r "$PIP_REQUIREMENTS_FILE"
+      - run: pip install -r "${HOME}${PIP_REQUIREMENTS_FILE}"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
