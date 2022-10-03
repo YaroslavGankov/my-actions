@@ -41,6 +41,7 @@ jobs:
           docker ps
           echo "docker ps -a"
           docker ps -a
+        continue-on-error: true
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
