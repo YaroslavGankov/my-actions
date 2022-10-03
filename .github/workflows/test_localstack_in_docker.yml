@@ -37,10 +37,7 @@ jobs:
 
       - name: debug docker 
         run: |
-          echo "docker ps"
-          docker ps
-          echo "docker ps -a"
-          docker ps -a
+          dpkg -l | grep docker
         continue-on-error: true
 
       - name: Setup Terraform
