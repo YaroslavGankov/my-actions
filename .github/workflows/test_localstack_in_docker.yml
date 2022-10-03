@@ -25,9 +25,8 @@ jobs:
     container:
       image: localstack/localstack
       ports: 
-        - 4566:4566
-        - 4510-4559:4510-4559
-
+        - 4566
+        - 4510-4559
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
