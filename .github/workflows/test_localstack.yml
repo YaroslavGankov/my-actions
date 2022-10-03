@@ -12,7 +12,7 @@ jobs:
     name: "Test localstack"
     runs-on: ubuntu-latest
     env:
-      WORKING_DIRECTORY: infracost-test
+      WORKING_DIRECTORY: tf-origins
     defaults:
       run:
         working-directory: ${{ env.WORKING_DIRECTORY }}

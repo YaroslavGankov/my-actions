@@ -1,3 +1,13 @@
+#directive for remote-state-file storage for terraform (for non-module structure)
+terraform {
+  backend "s3" {
+    bucket="bucket-from-lambda-skiff"
+    key = "localstack_test/terraform.tfstate"
+    region = "us-east-1"
+  }
+}   
+
+
 variable vpc_cidr_mask16 {
     description = "First two numbers of the VPC (without dot in the end)"
     type = string
