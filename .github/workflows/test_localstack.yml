@@ -38,7 +38,7 @@ jobs:
           echo 'echo $PATH:'
           echo $PATH
           echo "install pip:"
-          apt install pip
+          sudo apt install pip
 
       - name: localstack. Setup
         run: |

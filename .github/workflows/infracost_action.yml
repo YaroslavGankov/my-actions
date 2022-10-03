@@ -6,11 +6,11 @@ name: "Test Infracost"
 on:
   workflow_dispatch:
   
-  pull_request:
-    branches: [ main ]
-    paths:
-        - 'infracost-test/**'
-        - '.github/workflows/infracost_action.yml'
+  # pull_request:
+  #   branches: [ main ]
+  #   paths:
+  #       - 'infracost-test/**'
+  #       - '.github/workflows/infracost_action.yml'
 jobs:
   Test_Infracost:
     name: "Test Infracost"
