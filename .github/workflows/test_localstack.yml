@@ -32,6 +32,22 @@ jobs:
           aws-region: us-east-1
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      
+      - name: localstack. Preparing to setup
+        run: |
+          echo 'echo $PATH:'
+          echo $PATH
+          echo "install pip:"
+          apt install pip
+
+      - name: localstack. Setup
+        run: |
+          echo "install localstack"
+          python3 -m pip install localstack
+          pip install terraform-local
+
+      - name: localstack. Start
+        run: localstack start
 
       - name: Terraform Format
         id: fmt
@@ -40,11 +56,11 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init
+        run: tflocal init
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color -input=false
+        run: tflocal plan -no-color -input=false
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: tflocal apply -auto-approve
