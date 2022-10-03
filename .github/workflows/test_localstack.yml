@@ -33,13 +33,16 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       
-      - name: localstack. Preparing to setup
-        run: |
-          echo 'echo $PATH:'
-          echo $PATH
-          echo "install pip:"
-          sudo apt install pip
-        continue-on-error: true
+      - name: Fix pyOpenSSL version
+        run:  pip install --upgrade pyOpenSSL
+
+      # - name: localstack. Preparing to setup
+      #   run: |
+      #     echo 'echo $PATH:'
+      #     echo $PATH
+      #     echo "install pip:"
+      #     sudo apt install pip
+      #   continue-on-error: true
 
       - name: localstack. Setup
         run: |
