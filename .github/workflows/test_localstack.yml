@@ -51,7 +51,7 @@ jobs:
           pip install terraform-local
 
       - name: localstack. Start
-        run: localstack start
+        run: localstack start -d
 
       - name: Terraform Format
         id: fmt
