@@ -1,4 +1,4 @@
-#
+#working version
 name: Localstack_Testing_Docker
 on:
   workflow_dispatch:
@@ -7,8 +7,6 @@ on:
   pull_request:
     branches: [ master, main ]
   
-  
-
 jobs:
   build1:
     name: "Test localstack in Docker"
