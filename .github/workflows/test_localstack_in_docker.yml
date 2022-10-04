@@ -1,4 +1,4 @@
-#working version with 'docker run...' 
+#
 name: Localstack_Testing_Docker
 on:
   workflow_dispatch:
@@ -22,12 +22,12 @@ jobs:
     defaults:
       run:
         working-directory: ${{ env.WORKING_DIRECTORY }}
-    container:
-      image: localstack/localstack
-      ports: 
-        - 4566:4566
-#        - 4510-4559:4510-4559
-#
+    services:
+      localstack_service:
+        image: localstack/localstack
+        ports:
+          - 4566:4566
+          - 4510-4559:4510-4559
 
     steps:
       - uses: actions/checkout@v3
