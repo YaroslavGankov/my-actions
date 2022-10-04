@@ -1,4 +1,4 @@
-#working version with service
+#
 name: Localstack_Testing_Docker
 on:
   workflow_dispatch:
@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       WORKING_DIRECTORY: tf-origins
-      # AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      # AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
       PIP_REQUIREMENTS_FILE: requirements.txt
     defaults:
       run:
@@ -49,14 +49,12 @@ jobs:
           terraform_wrapper: true
           terraform_version: 1.2.5
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-          aws-access-key-id: test
-          aws-secret-access-key: test
-          # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      # - name: Configure AWS Credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       
       # - name: Fix pyOpenSSL version
       #   run:  pip install --upgrade pyOpenSSL
