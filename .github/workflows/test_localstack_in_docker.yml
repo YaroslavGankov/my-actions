@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       WORKING_DIRECTORY: tf-origins
-      # AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       # AWS_ACCESS_KEY_ID: test
       # AWS_SECRET_ACCESS_KEY: test
       PIP_REQUIREMENTS_FILE: requirements.txt
