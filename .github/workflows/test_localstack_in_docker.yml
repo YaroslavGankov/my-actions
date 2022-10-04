@@ -81,11 +81,11 @@ jobs:
 
       - name: terraform Init
         id: init
-        run: terraform init
+        run: tflocal init
 
       - name: terraform Plan
         id: plan
-        run: terraform plan -no-color -input=false
+        run: tflocal plan -no-color -input=false
 
       - name: tflocal Apply
         run: tflocal apply -auto-approve
