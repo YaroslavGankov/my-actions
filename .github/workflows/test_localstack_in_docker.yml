@@ -35,9 +35,9 @@ jobs:
           cache: 'pip' # caching pip dependencies
       - run: pip install -r "${GITHUB_WORKSPACE}/${PIP_REQUIREMENTS_FILE}"
 
-      - name: debug docker 
+      - name: debug telnet
         run: |
-          dpkg -l | grep docker
+          telnet localhost 4566
         continue-on-error: true
 
       - name: Setup Terraform
@@ -78,7 +78,7 @@ jobs:
 
       - name: tflocal Init
         id: init
-        run: tflocal init
+        run: terraform init
 
       - name: tflocal Plan
         id: plan
