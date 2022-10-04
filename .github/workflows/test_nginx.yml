@@ -12,7 +12,7 @@ jobs:
     container:
       image: nginx
       ports: 
-        - 80:80
+        - 80
 #        - 4510-4559:4510-4559
 #
 
