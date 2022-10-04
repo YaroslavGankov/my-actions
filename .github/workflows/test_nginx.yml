@@ -1,0 +1,29 @@
+#working version with 'docker run...' 
+name: Test nginx
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [ master, main ]
+
+jobs:
+  build:
+    name: "Nginx"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+    container:
+      image: nginx
+      ports: 
+        - 80:80
+#        - 4510-4559:4510-4559
+#
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: debug nginx
+        run: |
+          netstat -tulpn
+          curl localhost:80
+        continue-on-error: true
