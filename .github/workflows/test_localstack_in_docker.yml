@@ -76,13 +76,13 @@ jobs:
         run: terraform fmt -check -diff
         continue-on-error: true
 
-      - name: tflocal Init
+      - name: terraform Init
         id: init
         run: terraform init
 
-      - name: tflocal Plan
+      - name: terraform Plan
         id: plan
-        run: tflocal plan -no-color -input=false
+        run: terraform plan -no-color -input=false
 
       - name: tflocal Apply
         run: tflocal apply -auto-approve
