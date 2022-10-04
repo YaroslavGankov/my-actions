@@ -21,6 +21,5 @@ jobs:
 
       - name: debug nginx
         run: |
-          netstat -tulpn
           curl localhost:80
         continue-on-error: true
