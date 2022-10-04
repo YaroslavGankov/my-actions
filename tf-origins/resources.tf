@@ -5,7 +5,7 @@ terraform {
     key = "localstack_test/terraform.tfstate"
     region = "us-east-1"
   }
-}   
+}
 
 
 variable vpc_cidr_mask16 {

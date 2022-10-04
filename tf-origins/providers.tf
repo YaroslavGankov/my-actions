@@ -14,4 +14,8 @@ terraform {
 }
 
 
-provider "aws" {}
+provider "aws" {
+  endpoints {
+    s3             = "http://s3.localhost.localstack.cloud:4566"
+  }
+}
