@@ -13,8 +13,15 @@ terraform {
   }
 }
 
-
 provider "aws" {
+  alias  = "us1"
+  region = "us-east-1"
+  default_tags {
+    tags = {
+      Managed_by    = "Terraform"
+      Owner         = "yaroslav.gankov"
+    }
+  }
   endpoints {
     s3             = "http://s3.localhost.localstack.cloud:4566"
   }
