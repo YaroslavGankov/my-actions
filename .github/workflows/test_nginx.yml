@@ -1,4 +1,4 @@
-#working version with 'docker run...' 
+#working version with service
 name: Test nginx
 on:
   workflow_dispatch:
@@ -13,7 +13,7 @@ jobs:
       nginx-service:
         image: nginx
         ports: 
-          - 80:80
+          - 60-100:60-100
     
     steps:
       - name: debug curl
