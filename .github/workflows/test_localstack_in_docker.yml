@@ -38,8 +38,9 @@ jobs:
           cache: 'pip'
       - run: pip install -r "${GITHUB_WORKSPACE}/${PIP_REQUIREMENTS_FILE}"
 
-      - name: debug telnet
+      - name: debug telnet & awslocal
         run: |
+          awslocal --version
           telnet localhost 4566
         continue-on-error: true
 
@@ -81,7 +82,7 @@ jobs:
 
       - name: terraform Init
         id: init
-        run: tflocal init
+        run: terraform init
 
       - name: terraform Plan
         id: plan
