@@ -1,26 +1,39 @@
-#test labelling
 name: "Labels_From_File"
 
 on:
   workflow_dispatch:
-  push:
+  pull_request:
     branches: [ main ]
+    paths:
+      - .github/labels.yml
+  push:
+#    branches: [ main ]
     paths:
       - .github/labels.yml
 
 jobs:
   assign_labels:
-    name: "Assign_labels_from_file"
+    name: "Define_labels_from_file"
     runs-on: ubuntu-latest
     env:
       LABELS_FILE: .github/labels.yml
     steps:
 
       - name: Checkout
-        #uses: actions/checkout@1.0.0
         uses: actions/checkout@v3
 
-      - name: Sync labels
+      - name: Sync labels (dryrun)
+        if: github.ref != 'refs/heads/main'
+        uses: b4b4r07/github-labeler@master
+        with:
+          dryrun: 'true'
+          config: ${{ env.LABELS_FILE }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: labeler
+        
+      - name: Define labels from file to repo
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: b4b4r07/github-labeler@master
         with:
           config: ${{ env.LABELS_FILE }}
