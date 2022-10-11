@@ -2,6 +2,7 @@
 name: Import labels
 
 on:
+  workflow_dispatch:
   label:
     types:
       - created
