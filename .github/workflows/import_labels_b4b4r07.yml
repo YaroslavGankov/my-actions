@@ -13,7 +13,7 @@ on:
       - deleted
 
 jobs:
-  sync:
+  import_labels:
     runs-on: ubuntu-latest
     env:
       LABELS_FILE: .github/labels.yml
