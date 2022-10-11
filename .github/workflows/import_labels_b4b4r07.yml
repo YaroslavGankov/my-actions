@@ -16,7 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checko  ut@v3
+      - name: touch labels.yml
+        run: touch .github/labels.yml
+
       - name: Import between existing labels
         uses: b4b4r07/github-labeler@master
         with:
