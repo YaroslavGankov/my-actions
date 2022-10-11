@@ -30,14 +30,14 @@ jobs:
         uses: b4b4r07/github-labeler@master
         with:
           import: 'true'
-          config: .github/labels.yml
+          config: ${{ env.LABELS_FILE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: "Debug: cat .github/labels.yml"
+      - name: "Debug: cat ${{ env.LABELS_FILE }}"
         run: |
           echo ${{ github.repository }}
-          cat .github/labels.yml
+          cat ${{ env.LABELS_FILE }}
         
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v1
