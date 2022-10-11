@@ -1,7 +1,5 @@
+#test labelling
 name: "Assign_labels"
-#3333
-#4444
-#5555
 
 on:
   workflow_dispatch:

@@ -1,3 +1,4 @@
+#standart file with labels, it is needed for automatic labelling
 labels:
 - name: help wanted
   description: Extra attention is needed
