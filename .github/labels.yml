@@ -1,4 +1,4 @@
-#standart file with labels. Don't automatic assign, just set in repo
+#comment for test
 labels:
 - name: approved
   description: ""
