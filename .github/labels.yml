@@ -1,0 +1,140 @@
+labels:
+- name: approved
+  description: ""
+  color: 229EEB
+- name: 'autorelease: pending'
+  description: ""
+  color: ededed
+- name: 'autorelease: tagged'
+  description: ""
+  color: ededed
+- name: bug
+  description: Something isn't working
+  color: d73a4a
+- name: ci/cd
+  description: ""
+  color: ededed
+- name: dependencies
+  description: ""
+  color: 4AAC61
+- name: documentation
+  description: ""
+  color: ededed
+- name: duplicate
+  description: This issue or pull request already exists
+  color: cfd3d7
+- name: enhancement
+  description: New feature or request
+  color: a2eeef
+- name: github-actions
+  description: ""
+  color: 006b75
+- name: good first issue
+  description: Good for newcomers
+  color: 7057ff
+- name: help wanted
+  description: Extra attention is needed
+  color: "008672"
+- name: in review
+  description: ""
+  color: F04A62
+- name: infrastructure
+  description: ""
+  color: ededed
+- name: invalid
+  description: This doesn't seem right
+  color: e4e669
+- name: on hold
+  description: ""
+  color: D27A6C
+- name: question
+  description: Further information is requested
+  color: d876e3
+- name: ready for review
+  description: ""
+  color: 1d76db
+- name: size/L
+  description: ""
+  color: ededed
+- name: size/M
+  description: ""
+  color: ededed
+- name: size/S
+  description: ""
+  color: ededed
+- name: size/XL
+  description: ""
+  color: ededed
+- name: size/XS
+  description: ""
+  color: ededed
+- name: tf-compute-dev
+  description: ""
+  color: 0e8a16
+- name: tf-compute-live
+  description: ""
+  color: F63857
+- name: tf-compute-staging
+  description: ""
+  color: 9E6FC0
+- name: tf-live-bootstrap
+  description: ""
+  color: ededed
+- name: tf-live-datawarehouse
+  description: ""
+  color: ededed
+- name: tf-live-monitoring
+  description: ""
+  color: ededed
+- name: tf-live-networking
+  description: ""
+  color: ededed
+- name: tf-live-security
+  description: ""
+  color: ededed
+- name: tf-live-shared
+  description: ""
+  color: ededed
+- name: wontfix
+  description: This will not be worked on
+  color: ffffff
+- name: work in progress
+  description: ""
+  color: E4D2E8
+repos:
+- name: YaroslavGankov/my-actions
+  labels:
+  - approved
+  - 'autorelease: pending'
+  - 'autorelease: tagged'
+  - bug
+  - ci/cd
+  - dependencies
+  - documentation
+  - duplicate
+  - enhancement
+  - github-actions
+  - good first issue
+  - help wanted
+  - in review
+  - infrastructure
+  - invalid
+  - on hold
+  - question
+  - ready for review
+  - size/L
+  - size/M
+  - size/S
+  - size/XL
+  - size/XS
+  - tf-compute-dev
+  - tf-compute-live
+  - tf-compute-staging
+  - tf-live-bootstrap
+  - tf-live-datawarehouse
+  - tf-live-monitoring
+  - tf-live-networking
+  - tf-live-security
+  - tf-live-shared
+  - wontfix
+  - work in progress

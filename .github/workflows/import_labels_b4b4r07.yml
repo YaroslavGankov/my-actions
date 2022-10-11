@@ -4,6 +4,8 @@ name: Import labels
 on:
   workflow_dispatch:
   push:
+    branches-ignore:
+      - main
     paths-ignore:
       - .github/labels.yml
   label:
@@ -13,7 +15,7 @@ on:
       - deleted
 
 jobs:
-  sync:
+  import_labels:
     runs-on: ubuntu-latest
     env:
       LABELS_FILE: .github/labels.yml
