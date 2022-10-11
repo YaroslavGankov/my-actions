@@ -1,4 +1,5 @@
 #import labels. Source from https://github.com/b4b4r07/github-labeler
+#can import labels to file (success). And created PR (but workflow is failed)
 name: Import labels 
 
 on:
