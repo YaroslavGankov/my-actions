@@ -4,7 +4,8 @@ name: Import labels
 on:
   workflow_dispatch:
   push:
-    paths-ignore: [ .github/labels.yml]
+    paths-ignore:
+      - .github/labels.yml
   label:
     types:
       - created
@@ -16,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checko  ut@v3
+        uses: actions/checkout@v3
       - name: touch labels.yml
         run: touch .github/labels.yml
 
