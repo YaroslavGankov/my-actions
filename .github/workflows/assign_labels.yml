@@ -1,0 +1,25 @@
+name: "Assign_labels"
+#3333
+#4444
+#5555
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  assign_labels:
+    name: "Assign_labels1"
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        #uses: actions/checkout@1.0.0
+        uses: actions/checkout@3
+
+      - name: Sync labels
+        uses: b4b4r07/github-labeler@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
