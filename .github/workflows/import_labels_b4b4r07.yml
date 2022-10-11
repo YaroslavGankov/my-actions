@@ -4,6 +4,8 @@ name: Import labels
 on:
   workflow_dispatch:
   push:
+    branches-ignore:
+      - main
     paths-ignore:
       - .github/labels.yml
   label:
