@@ -1,8 +1,13 @@
-#https://github.com/b4b4r07/github-labeler
-name: Import labels
+#import labels. Source from https://github.com/b4b4r07/github-labeler
+name: Import labels 
 
 on:
   workflow_dispatch:
+  push:
+    branches-ignore:
+      - main
+    paths-ignore:
+      - .github/labels.yml
   label:
     types:
       - created
@@ -10,26 +15,38 @@ on:
       - deleted
 
 jobs:
-  sync:
+  import_labels:
     runs-on: ubuntu-latest
+    env:
+      LABELS_FILE: .github/labels.yml
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: touch labels.yml
+        run: |
+          touch .github/labels.yml
+          echo "repos:" > ${{ env.LABELS_FILE }}
+          echo "- name: ${{ github.repository }}" >> ${{ env.LABELS_FILE }}
+
       - name: Import between existing labels
         uses: b4b4r07/github-labeler@master
         with:
           import: 'true'
+          config: ${{ env.LABELS_FILE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: cat .github/labels.yml
-        run: cat .github/labels.yml
+      
+      - name: "Debug: cat ${{ env.LABELS_FILE }}"
+        run: |
+          echo ${{ github.repository }}
+          cat ${{ env.LABELS_FILE }}
         
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Import existing labels"
-          title: "Import existing labels"
+          commit-message: "Import existing labels to file"
+          title: "Import existing labels to file"
           body: |
             ## WHAT
             This pull request was created by [create-pull-request](https://github.com/peter-evans/create-pull-request).
