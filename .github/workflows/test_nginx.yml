@@ -28,6 +28,6 @@ jobs:
         continue-on-error: true
       
       - name: ololo step
-        if: failure()
+        if: ${{ failure() }}
         run: echo "ololo1"
         continue-on-error: true
