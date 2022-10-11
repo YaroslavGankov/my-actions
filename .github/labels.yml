@@ -17,5 +17,5 @@ repos:
   labels:
   - help wanted skiff
   - tf bug
-  - enhancement
-  - question
+  #- enhancement
+  #- question
