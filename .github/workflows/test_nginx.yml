@@ -25,9 +25,9 @@ jobs:
         run: |
           curl localhost:80
           cat /notexistfile
-        continue-on-error: true
+        #continue-on-error: true
       
       - name: ololo step
         if: ${{ failure() }}
         run: echo "ololo1"
-        continue-on-error: true
+        continue-on-error: true 
