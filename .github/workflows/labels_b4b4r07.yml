@@ -1,5 +1,5 @@
 #test labelling
-name: "Labels: b4b4r07/github-labeler"
+name: "Labels_From_File"
 
 on:
   workflow_dispatch:
@@ -7,13 +7,13 @@ on:
     branches: [ main ]
     paths:
       - .github/labels.yml
-  # pull_request:
-  #   branches: [ main ]
 
 jobs:
   assign_labels:
-    name: "Assign_labels1"
+    name: "Assign_labels_from_file"
     runs-on: ubuntu-latest
+    env:
+      LABELS_FILE: .github/labels.yml
     steps:
 
       - name: Checkout
@@ -22,5 +22,7 @@ jobs:
 
       - name: Sync labels
         uses: b4b4r07/github-labeler@master
+        with:
+          config: ${{ env.LABELS_FILE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
