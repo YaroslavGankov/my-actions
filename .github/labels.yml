@@ -1,3 +1,0 @@
-repos:
-- name: ${{ github.repository }}
-  labels:

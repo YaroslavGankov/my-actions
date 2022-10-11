@@ -15,11 +15,16 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    env:
+      LABELS_FILE: .github/labels.yml
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: touch labels.yml
-        run: touch .github/labels.yml
+        run: |
+          touch .github/labels.yml
+          echo "repos:" > ${{ env.LABELS_FILE }}
+          echo "- name: ${{ github.repository }}" >> ${{ env.LABELS_FILE }}
 
       - name: Import between existing labels
         uses: b4b4r07/github-labeler@master
