@@ -1,3 +1,4 @@
+#standart file with labels. Don't automatic assign, just set in repo
 labels:
 - name: approved
   description: ""

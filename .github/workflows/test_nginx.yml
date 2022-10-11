@@ -24,4 +24,10 @@ jobs:
       - name: debug telnet
         run: |
           curl localhost:80
-        continue-on-error: true
+          cat /notexistfile
+        #continue-on-error: true
+      
+      - name: ololo step
+        if: failure()
+        run: echo "ololo1"
+        continue-on-error: true 
