@@ -1,9 +1,9 @@
 #standart file with labels, it is needed for automatic labelling
 labels:
-- name: help wanted
+- name: help wanted skiff
   description: Extra attention is needed
   color: "008672"
-- name: bug
+- name: tf bug
   description: Something isn't working
   color: fc2929
 - name: enhancement
@@ -13,9 +13,9 @@ labels:
   description: Further information is requested
   color: cc317c
 repos:
-- name: user/repo
+- name: YaroslavGankov/my-actions
   labels:
-  - help wanted
-  - bug
+  - help wanted skiff
+  - tf bug
   - enhancement
   - question
