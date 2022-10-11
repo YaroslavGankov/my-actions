@@ -22,7 +22,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Sync labels with dryrun option
+      - name: Sync labels (dryrun)
         if: github.ref != 'refs/heads/main'
         uses: b4b4r07/github-labeler@master
         with:
@@ -32,19 +32,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: labeler
         
-      - name: Post github-labeler command result to GitHub comment
-        uses: b4b4r07/action-github-comment@master
-        if: steps.labeler.outputs.result && github.ref != 'refs/heads/main'
-        with:
-          body: |
-            ## github-labeler result
-            ```
-            ${{ steps.labeler.outputs.result }}
-            ```
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LOG: trace
-
       - name: Define labels from file to repo
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: b4b4r07/github-labeler@master
