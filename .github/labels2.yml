@@ -1,5 +1,5 @@
 #standart file with labels. Don't automatic assign, just set in repo
-labels:
+#labels:
 - name: help wanted skiff
   description: Extra attention is needed
   color: "008672"
@@ -12,10 +12,10 @@ labels:
 - name: question
   description: Further information is requested
   color: cc317c
-repos:
-- name: YaroslavGankov/my-actions
-  labels:
-  - help wanted skiff
-  - tf bug
-  #- enhancement
-  #- question
+# repos:
+# - name: YaroslavGankov/my-actions
+#   labels:
+#   - help wanted skiff
+#   - tf bug
+#   #- enhancement
+#   #- question
