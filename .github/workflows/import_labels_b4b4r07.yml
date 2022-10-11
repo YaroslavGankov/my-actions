@@ -1,7 +1,10 @@
-#https://github.com/b4b4r07/github-labeler
-name: Import labels
+#import labels. Source from https://github.com/b4b4r07/github-labeler
+name: Import labels 
 
 on:
+  workflow_dispatch:
+  push:
+    paths-ignore: [ .github/labels.yml]
   label:
     types:
       - created
@@ -13,23 +16,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@1.0.0
+        uses: actions/checkout@v3
       - name: Import between existing labels
         uses: b4b4r07/github-labeler@master
         with:
           import: 'true'
+          config: .github/labels.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Import existing labels"
-          title: "Import existing labels"
-          body: |
-            ## WHAT
-            This pull request was created by [create-pull-request](https://github.com/peter-evans/create-pull-request).
-            ## WHY
-            Current labels.yaml and existing labels don't match.
-          branch: import-labels
-          branch-suffix: timestamp
+      
+      - name: "Debug: cat .github/labels.yml"
+        run: cat .github/labels.yml
+        
+      # - name: Create Pull Request
+      #   uses: peter-evans/create-pull-request@v1
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     commit-message: "Import existing labels"
+      #     title: "Import existing labels"
+      #     body: |
+      #       ## WHAT
+      #       This pull request was created by [create-pull-request](https://github.com/peter-evans/create-pull-request).
+      #       ## WHY
+      #       Current labels.yaml and existing labels don't match.
+      #     branch: import-labels
+      #     branch-suffix: timestamp
