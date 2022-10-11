@@ -105,37 +105,11 @@ labels:
 repos:
 - name: YaroslavGankov/my-actions
   labels:
-  - approved
-  - 'autorelease: pending'
-  - 'autorelease: tagged'
-  - bug
-  - ci/cd
-  - dependencies
-  - documentation
-  - duplicate
-  - enhancement
-  - github-actions
-  - good first issue
-  - help wanted
-  - in review
   - infrastructure
-  - invalid
-  - on hold
-  - question
-  - ready for review
-  - size/L
-  - size/M
-  - size/S
-  - size/XL
-  - size/XS
-  - tf-compute-dev
-  - tf-compute-live
-  - tf-compute-staging
-  - tf-live-bootstrap
-  - tf-live-datawarehouse
-  - tf-live-monitoring
-  - tf-live-networking
-  - tf-live-security
-  - tf-live-shared
-  - wontfix
   - work in progress
+  - tf-live-datawarehouse
+- name: YaroslavGankov/test_terraform_docs_in_modules
+  labels:
+  - infrastructure
+  - work in progress
+  - tf-live-datawarehouse
