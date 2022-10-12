@@ -79,7 +79,11 @@ jobs:
 
       - name: Debug
         run: |
+          echo "ls -la"
+          ls -la
+          echo "-----------------------------------"
           cat .terraform.lock.hcl
+          echo "-----------------------------------"
 
       - name: Terraform Plan
         id: plan
