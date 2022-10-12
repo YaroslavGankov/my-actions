@@ -16,16 +16,6 @@ variable "name_project" {
   default = "skiff"
 }
 
-provider "aws" {
-  default_tags {
-    tags = {
-      Learning = "Terraform"
-      Owner = "yaroslav.gankov"
-      Creator = "yaroslav.gankov"
-    }
-  }
-}
-
 variable "vpc_cidr_mask16" {
   description = "Enter VPC CIDR/16 first two numbers (without dot in the end): Example: '10.171'"
 }
