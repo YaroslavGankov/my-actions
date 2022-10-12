@@ -92,7 +92,7 @@ jobs:
           echo "dir"
           dir
           echo "-----------------------------------"
-          TYPE .terraform.lock.hcl
+          TYPE terraform.lock.hcl
           echo "-----------------------------------"
 
       - name: Terraform Plan
