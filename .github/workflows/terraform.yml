@@ -91,6 +91,8 @@ jobs:
         run: |
           echo "dir"
           dir
+          echo "dir C"
+          dir C:\Program Files\PowerShell\7\
           echo "-----------------------------------"
           TYPE terraform.lock.hcl
           echo "-----------------------------------"
