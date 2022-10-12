@@ -16,12 +16,12 @@ jobs:
           - 60-100:60-100
     
     steps:
-      - name: debug curl
+      - name: debug telnet
         run: |
           telnet localhost 80
         continue-on-error: true
     
-      - name: debug telnet
+      - name: debug curl
         run: |
           curl localhost:80
           cat /notexistfile
