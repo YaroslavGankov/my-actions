@@ -44,7 +44,7 @@ resource "aws_instance" "skiff_webserver1" {
     instance_type = var.instance_type
     subnet_id = element(var.subnet_ids,count.index)
     vpc_security_group_ids = var.sg_id
-    user_data = file(var.file_for_user_data)
+    #user_data = file(var.file_for_user_data)
     key_name = var.key_pair_name
     tags = {
         Name = "${var.server_name}-${count.index+1}"
