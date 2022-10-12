@@ -13,7 +13,7 @@ jobs:
         os: [ ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     env:
-      PATH_TERRAFORM_PROVIDERS: .terraform/providers/
+      PATH_TERRAFORM_PROVIDERS: terraform_lock_hcl
       TF_ORIGIN_PROVIDER: providers.tf
       WORKING_DIRECTORY: terraform_lock_hcl #my dir with tf-files
     defaults:
@@ -35,38 +35,39 @@ jobs:
           terraform_wrapper: true
           terraform_version: 1.2.5
       
-      #  #сначала кешируем файл providers.tf и сверяем его
-      # - name: Check file providers.tf
-      #   id: check_file_origin_providers_tf
-      #   uses: actions/cache@v3
-      #   with:
-      #     ##working variant:
-      #     #path: tf-origins/providers.tf
-      #     #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
-      #     path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
-      #     #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
-      #     key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-1
+       #сначала кешируем файл providers.tf и сверяем его
+      - name: Check file providers.tf
+        id: check_file_origin_providers_tf
+        uses: actions/cache@v3
+        with:
+          ##working variant:
+          #path: tf-origins/providers.tf
+          #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
+          path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
+          #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
+          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-1
 
-      # #если файл providers.tf не тот, то запускаем Init
-      # - name: First Terraform Init
-      #   if: ${{ steps.check_file_origin_providers_tf.outputs.cache-hit != 'true' }}
-      #   id: first_init
-      #   run: |
-      #     echo "startuem"
-      #     terraform init
-      #     sleep 5
+      #если файл providers.tf не тот, то запускаем Init
+      - name: First Terraform Init
+        if: ${{ steps.check_file_origin_providers_tf.outputs.cache-hit != 'true' }}
+        id: first_init
+        run: |
+          echo "startuem"
+          terraform init
+          sleep 5
 
-      # #кешируем провайдеры
-      # - name: Cache_Terraform_Providers
-      #   id: cache_providers
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: |
-      #       ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS) }}
-      #       ${{ format('{0}{1}',env.WORKING_DIRECTORY,'/.terraform.lock.hcl') }}
-      #     #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
-      #     key: ${{ runner.os }}-providers-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}
-      #     #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
+      #кешируем провайдеры
+      - name: Cache_Terraform_Providers
+        id: cache_providers
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS) }}
+            ${{ format('{0}{1}',env.WORKING_DIRECTORY,'/.terraform.lock.hcl') }}
+          #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
+          key: ${{ runner.os }}-providers-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}
+          #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
+
       - name: Debug linux
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
@@ -78,7 +79,7 @@ jobs:
 
       #если по какой-то причине не была пройдена Init ранее, то она пройдёт сейчас
       - name: Terraform Init
-        # if: ${{ steps.cache_providers.outputs.cache-hit != 'true' && steps.first_init.outcome != 'success' }}
+        if: ${{ steps.cache_providers.outputs.cache-hit != 'true' && steps.first_init.outcome != 'success' }}
         id: init
         run: |
           terraform init

@@ -4,6 +4,15 @@
 #third comment
 #4 comment
 
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "4.30"
+    }
+  }
+}
+
 provider "aws" {
   default_tags {
     tags = {
