@@ -21,26 +21,7 @@ terraform {
 }
 
 #--------MAIN
-provider "aws" {
-  default_tags {
-    tags = {
-      Learning = "Terraform TEG"
-      Owner = "yaroslav.gankov"
-      Creator = "yaroslav.gankov"
-    }
-  }
-}
-
 module "create_skiff_VPC_and_subnets" {
-  # MODULE create_skiff_VPC_and_subnets:
-  # DESCRIPTION: Create VPC+subnets+IGateway+RouteTable
-  # OUTPUTS:
-  # vpc_id
-  # vpc_cidr
-  # public_subnet_ids
-  # internal_subnet_ids
-  # DB_subnet_ids
-  # vpc_cidr_mask16 - first two numbers of CIDR/16, example "10.171"
   source = "./layer1.Network" 
   count_subnets = 2 #number of public subnets in VPC with Internet Gateway
   count_subnets_internal = 2 #number of internal subnets in VPC with NAT
