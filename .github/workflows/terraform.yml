@@ -90,7 +90,7 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           echo "dir"
-          dir /H /S
+          DIR /H
           echo "dir C"
           dir "C:\Program Files\PowerShell\7\" /H
           echo "-----------------------------------"
