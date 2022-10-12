@@ -92,7 +92,7 @@ jobs:
           echo "dir"
           dir
           echo "dir C"
-          dir "C:\Program Files\PowerShell\7\"
+          dir ${{ env.TERRAFORM_CLI_PATH }}
           echo "-----------------------------------"
           TYPE .terraform.lock.hcl
           echo "-----------------------------------"
