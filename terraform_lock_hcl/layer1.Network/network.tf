@@ -90,16 +90,16 @@ resource "aws_route_table_association" "internal_routes_skiff" {
     route_table_id = aws_route_table.internal_subnets.id
     subnet_id = element(aws_subnet.internal_subnets[*].id, count.index)
 }
-resource "aws_eip" "nat" {
-    vpc = true
-}
-resource "aws_nat_gateway" "ng" {
-  subnet_id = aws_subnet.public_subnets[0].id
-  allocation_id = aws_eip.nat.id
-  tags = {
-        Name = "${var.vpc_cidr_mask16}.x.x-${var.name_project}-${var.env}"
-    }
-}
+# resource "aws_eip" "nat" {
+#     vpc = true
+# }
+# resource "aws_nat_gateway" "ng" {
+#   subnet_id = aws_subnet.public_subnets[0].id
+#   allocation_id = aws_eip.nat.id
+#   tags = {
+#         Name = "${var.vpc_cidr_mask16}.x.x-${var.name_project}-${var.env}"
+#     }
+# }
 #end create internal subnets
 
 #start create DB subnets
