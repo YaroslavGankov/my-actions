@@ -94,8 +94,6 @@ jobs:
           echo "dir C"
           dir ${{ env.TERRAFORM_CLI_PATH }}
           echo "-----------------------------------"
-          TYPE .terraform.lock.hcl
-          echo "-----------------------------------"
 
       - name: Terraform Plan
         id: plan
