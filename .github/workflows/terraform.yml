@@ -77,12 +77,22 @@ jobs:
           terraform init
       #тут, наверное, нужно добавить какой-нибудь output для контроля, ведь этот шаг будет запускаться в случае аварии с кешем или с Init выше
 
-      - name: Debug
+      - name: Debug linux
+        if: ${{ matrix.os != "windows-latest" }}
         run: |
           echo "ls -la"
           ls -la
           echo "-----------------------------------"
           cat .terraform.lock.hcl
+          echo "-----------------------------------"
+      
+      - name: Debug windows
+        if: ${{ matrix.os == "windows-latest" }}
+        run: |
+          echo "dir"
+          dir
+          echo "-----------------------------------"
+          TYPE .terraform.lock.hcl
           echo "-----------------------------------"
 
       - name: Terraform Plan
