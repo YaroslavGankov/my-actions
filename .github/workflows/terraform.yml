@@ -141,6 +141,10 @@ jobs:
           echo "HASH_LOCK_FILE_CURRENT: $HASH_LOCK_FILE_CURRENT"
           echo "HASH_LOCK_FILE_CURRENT_GH=ololo #${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}" >> $GITHUB_ENV
           echo "HASH_LOCK_FILE_CURRENT_GH: ${{ env.HASH_LOCK_FILE_CURRENT_GH }}"
+          echo "--------------------"
+          echo ${GITHUB_REF}
+          echo ${GITHUB_REF##*/}
+          echo "--------------------"
           if [[ "$HASH_LOCK_FILE_PREVIOUS" != "$HASH_LOCK_FILE_CURRENT"  ]]; then \
             echo "start git actions:"; \
             echo "git config:"; \
