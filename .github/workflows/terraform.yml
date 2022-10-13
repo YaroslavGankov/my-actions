@@ -116,8 +116,10 @@ jobs:
         run: |
           # читаем хэш исходного файла и отправляем коммит в случае, если старый и новый файлы отличаются
           export HASH_LOCK_FILE_PREVIOUS=${{ hashFiles(env.TF_LOCK_FILE) }}
+          echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
           terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
           export HASH_LOCK_FILE_CURRENT=${{ hashFiles(env.TF_LOCK_FILE) }}
+          echo "HASH_LOCK_FILE_CURRENT: $HASH_LOCK_FILE_CURRENT"
           if [ "$HASH_LOCK_FILE_PREVIOUS" -ne "$HASH_LOCK_FILE_CURRENT"  ]; then \
             echo "start git actions:"; \
             echo "git config:"; \
@@ -158,12 +160,12 @@ jobs:
           dir ${{ env.TERRAFORM_CLI_PATH }}
           echo "-----------------------------------"
 
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan -no-color
+      # - name: Terraform Plan
+      #   id: plan
+      #   run: terraform plan -no-color
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve
       
-      - name: Terraform Destroy
-        run: terraform destroy -auto-approve
+      # - name: Terraform Destroy
+      #   run: terraform destroy -auto-approve
