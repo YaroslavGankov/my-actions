@@ -127,6 +127,8 @@ jobs:
           terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
           export HASH_LOCK_FILE_CURRENT=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
           echo "HASH_LOCK_FILE_CURRENT: $HASH_LOCK_FILE_CURRENT"
+          echo "HASH_LOCK_FILE_CURRENT_GH=$HASH_LOCK_FILE_CURRENT" >> $GITHUB_ENV
+          echo "HASH_LOCK_FILE_CURRENT_GH: ${{ env.HASH_LOCK_FILE_CURRENT_GH }}"
           if [ "$HASH_LOCK_FILE_PREVIOUS" -ne "$HASH_LOCK_FILE_CURRENT"  ]; then \
             echo "start git actions:"; \
             echo "git config:"; \
