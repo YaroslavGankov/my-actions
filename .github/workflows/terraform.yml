@@ -119,7 +119,7 @@ jobs:
           echo "git add:"
           git add ${{ env.TF_LOCK_FILE }}
           echo "set env 'result_git:'"
-          git commit -m "Automated commit: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))" > file1.txt
+          git commit -m "Automated commit: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))"
           result_git=$(cat file1.txt)
           echo $result_git
           if [[ "$result_git" != "*nothing to commit, working tree clean*" ]]; then \
