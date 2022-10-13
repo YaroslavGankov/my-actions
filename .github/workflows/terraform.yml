@@ -97,17 +97,16 @@ jobs:
 
       #если по какой-то причине не была пройдена Init ранее, то она пройдёт сейчас
       - name: Terraform Init
-        if: ${{ steps.first_init.outcome != 'success' }}
+        if: ${{ steps.first_init.outcome != 'success' && steps.first_init.outcome != 'failure' }}
         id: init
         run: terraform init
         continue-on-error: true
       
       #если terraform init не запускется по причине необходимости upgrade, то запускаем terraform init -upgrade
       - name: Terraform Init -upgrade
-        if: ${{ steps.init.outcome != 'success' }}
+        if: ${{ steps.init.outcome == 'failure' }}
         id: init_upgrade
-        run: |
-          terraform init -upgrade
+        run: terraform init -upgrade
 
       #фиксируем провайдеры для различных платформ (в случае применения terraform init -upgrade нужно снова их фиксировать)
       - name: Lock providers for desired platforms and push the file
