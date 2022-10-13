@@ -1,7 +1,7 @@
 name: Terraform init/plan/apply
 on:
   push:
-#    branches: [ "main" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
@@ -59,7 +59,7 @@ jobs:
           #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
           path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
           #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
-          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-3
+          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-4
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
@@ -112,6 +112,7 @@ jobs:
           # читаем хэш исходного файла и отправляем коммит в случае, если старый и новый файлы отличаются
           ${{ hashFiles(env.TF_LOCK_FILE) }}
           terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
+          echo "start git actions:"
           git config --global user.name "AutoCommit"
           git config --global user.email "AutoCommit@users.noreply.github.com"
           git add ${{ env.TF_LOCK_FILE }}
