@@ -81,9 +81,10 @@ jobs:
         with:
           path: |
             ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS) }}
-            ${{ format('{0}{1}',env.WORKING_DIRECTORY,'/.terraform.lock.hcl') }}
+            ${{ env.TF_PLUGIN_CACHE_DIR }}
+#            ${{ format('{0}{1}',env.WORKING_DIRECTORY,'/.terraform.lock.hcl') }}
           #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
-          key: ${{ runner.os }}-providers-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}
+          key: ${{ runner.os }}-providers-cache-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}
           #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
 
       - name: Debug linux
@@ -162,9 +163,9 @@ jobs:
           dir ${{ env.TERRAFORM_CLI_PATH }}
           echo "-----------------------------------"
 
-      # - name: Terraform Plan
-      #   id: plan
-      #   run: terraform plan -no-color
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
 
       # - name: Terraform Apply
       #   run: terraform apply -auto-approve
