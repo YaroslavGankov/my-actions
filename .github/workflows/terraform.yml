@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest]
+        os: [ ubuntu-latest ] #, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     env:
       TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
@@ -59,7 +59,7 @@ jobs:
           #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
           path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
           #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
-          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-1
+          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-2
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
