@@ -134,14 +134,14 @@ jobs:
         run: |
           # читаем хэш исходного файла и отправляем коммит в случае, если старый и новый файлы отличаются
           # export HASH_LOCK_FILE_PREVIOUS=${{ hashFiles(format('{0}{1}{2}{3}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE,'_old')) }}
-          # echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
-          # echo "HASH_LOCK_FILE_PREVIOUS_GH=$HASH_LOCK_FILE_PREVIOUS" >> $GITHUB_ENV
+          echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
+          echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
           terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
           export HASH_LOCK_FILE_CURRENT=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
           echo "HASH_LOCK_FILE_CURRENT: $HASH_LOCK_FILE_CURRENT"
           echo "HASH_LOCK_FILE_CURRENT_GH=ololo #${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}" >> $GITHUB_ENV
           echo "HASH_LOCK_FILE_CURRENT_GH: ${{ env.HASH_LOCK_FILE_CURRENT_GH }}"
-          if [ "$HASH_LOCK_FILE_PREVIOUS" -ne "$HASH_LOCK_FILE_CURRENT"  ]; then \
+          if [[ "$HASH_LOCK_FILE_PREVIOUS" != "$HASH_LOCK_FILE_CURRENT"  ]]; then \
             echo "start git actions:"; \
             echo "git config:"; \
             git config --global user.name "AutoCommit"; \
