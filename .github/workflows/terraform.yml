@@ -105,8 +105,8 @@ jobs:
         continue-on-error: true
       
       #если terraform init не запускется по причине необходимости upgrade, то запускаем terraform init -upgrade
-      - name: Terraform Init -upgrade
-        if: ${{ steps.first_init.conclusion != 'success' && steps.init.outcome == 'failure' }}
+      - name: Terraform init -upgrade
+        if: ${{ steps.first_init.conclusion != 'success' && steps.init.outcome != 'success' }}
         id: init_upgrade
         run: terraform init -upgrade
 
