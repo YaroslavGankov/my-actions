@@ -110,20 +110,18 @@ jobs:
         #if: ${{ steps.init_upgrade.outcome == 'success' }}
         run: |
           # читаем хэш исходного файла и отправляем коммит в случае, если старый и новый файлы отличаются
-          ${{ hashFiles(env.TF_LOCK_FILE) }}
+          export HASH_LOCK_FILE_PREVIOUS=${{ hashFiles(env.TF_LOCK_FILE) }}
           terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
-          echo "start git actions:"
-          echo "git config:"
-          git config --global user.name "AutoCommit"
-          git config --global user.email "AutoCommit@users.noreply.github.com"
-          echo "git add:"
-          git add ${{ env.TF_LOCK_FILE }}
-          echo "set env 'RESULT_GIT:'"
-          temp1=$(echo "Automated commit: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))")
-          echo $temp1
-          git commit -m "$temp1"
-          export out_command="$?"
-          if [ "$out_command" -ne 0 ]; then \
+          export HASH_LOCK_FILE_CURRENT=${{ hashFiles(env.TF_LOCK_FILE) }}
+          if [ "$HASH_LOCK_FILE_PREVIOUS" -ne "$HASH_LOCK_FILE_CURRENT"  ]; then \
+            echo "start git actions:"; \
+            echo "git config:"; \
+            git config --global user.name "AutoCommit"; \
+            git config --global user.email "AutoCommit@users.noreply.github.com"; \
+            echo "git add:"; \
+            git add ${{ env.TF_LOCK_FILE }}; \
+            temp1=$(echo "Automated commit: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))"); \
+            git commit -m "$temp1"; \
             git push; \
           else \
             echo "File ${{ env.TF_LOCK_FILE }} wasn't changed. Push isn't needed"; \
