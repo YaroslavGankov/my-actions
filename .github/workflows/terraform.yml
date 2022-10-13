@@ -144,6 +144,8 @@ jobs:
           echo "--------------------"
           echo ${GITHUB_REF}
           echo ${GITHUB_REF##*/}
+          echo ${GITHUB_HEAD_REF}
+          echo ${GITHUB_HEAD_REF##*/}          
           echo "--------------------"
           if [[ "$HASH_LOCK_FILE_PREVIOUS" != "$HASH_LOCK_FILE_CURRENT"  ]]; then \
             echo "start git actions:"; \
@@ -154,7 +156,7 @@ jobs:
             git add ${{ env.TF_LOCK_FILE }}; \
             temp1=$(echo "Automated commit: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))"); \
             git commit -m "$temp1"; \
-            git push; \
+            git push origin ${GITHUB_HEAD_REF##*/}; \
           else \
             echo "File ${{ env.TF_LOCK_FILE }} wasn't changed. Push isn't needed"; \
           fi
