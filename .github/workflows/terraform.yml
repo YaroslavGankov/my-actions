@@ -67,7 +67,8 @@ jobs:
         id: first_init
         run: |
           echo "startuem"
-          export TEMP1=$(terraform init)
+          #export TEMP1=$(terraform init)
+          terraform init
           echo "-----------------------"
           echo $TEMP1
           echo "-----------------------"
