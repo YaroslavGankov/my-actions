@@ -107,16 +107,20 @@ jobs:
 
       #фиксируем провайдеры для различных платформ (в случае применения terraform init -upgrade нужно снова их фиксировать)
       - name: Lock providers for desired platforms and push the file
-        if: ${{ steps.init_upgrade.outcome == 'success' }}
+        #if: ${{ steps.init_upgrade.outcome == 'success' }}
         run: |
           # читаем хэш исходного файла и отправляем коммит в случае, если старый и новый файлы отличаются
           ${{ hashFiles(env.TF_LOCK_FILE) }}
           terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
           echo "start git actions:"
+          echo "git config:"
           git config --global user.name "AutoCommit"
           git config --global user.email "AutoCommit@users.noreply.github.com"
+          echo "git add:"
           git add ${{ env.TF_LOCK_FILE }}
-          result_git=$(git commit -m "Automated commit: ${{ env.TF_LOCK_FILE }}" -m "($(date +%Y%m%d_%H%M%S))")
+          echo "set env 'result_git:'"
+          git commit -m "Automated commit: ${{ env.TF_LOCK_FILE }}" -m "($(date +%Y%m%d_%H%M%S))" > file1.txt
+          result_git=$(cat file1.txt)
           echo $result_git
           if [[ "$result_git" != "*nothing to commit, working tree clean*" ]]; then \
             git push; \
