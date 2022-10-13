@@ -44,12 +44,12 @@ jobs:
           mkdir -p "/Users/runner/.terraform.d/plugin-cache"
         continue-on-error: true
       
-      - name: Terraform Format
-        id: fmt
-        run: terraform fmt -check -diff
-        continue-on-error: true
+      # - name: Terraform Format
+      #   id: fmt
+      #   run: terraform fmt -check -diff
+      #   continue-on-error: true
       
-       #сначала кешируем файл providers.tf и сверяем его
+      #  сначала кешируем файл providers.tf и сверяем его
       - name: Check file providers.tf
         id: check_file_origin_providers_tf
         uses: actions/cache@v3
@@ -75,17 +75,17 @@ jobs:
         continue-on-error: true
 
       #кешируем провайдеры
-      - name: Cache_Terraform_Providers
-        id: cache_providers
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS) }}
-            ${{ env.TF_PLUGIN_CACHE_DIR }}
-#            ${{ format('{0}{1}',env.WORKING_DIRECTORY,'/.terraform.lock.hcl') }}
-          #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
-          key: ${{ runner.os }}-providers-cache-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}
-          #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
+#       - name: Cache_Terraform_Providers
+#         id: cache_providers
+#         uses: actions/cache@v3
+#         with:
+#           path: |
+#             ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS) }}
+#             ${{ env.TF_PLUGIN_CACHE_DIR }}
+# #            ${{ format('{0}{1}',env.WORKING_DIRECTORY,'/.terraform.lock.hcl') }}
+#           #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
+#           key: ${{ runner.os }}-providers-cache-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}
+#           #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
 
       - name: Debug linux
         if: ${{ matrix.os != 'windows-latest' }}
