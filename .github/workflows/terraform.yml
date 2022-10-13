@@ -41,6 +41,7 @@ jobs:
         run: |
           pwd
           mkdir -p "$TF_PLUGIN_CACHE_DIR"
+          mkdir -p "/Users/runner/.terraform.d/plugin-cache"
         continue-on-error: true
       
       - name: Terraform Format
