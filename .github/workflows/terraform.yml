@@ -121,15 +121,19 @@ jobs:
           echo "set env 'RESULT_GIT:'"
           temp1=$(echo "Automated commit: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))")
           echo $temp1
-          echo 'RESULT_GIT<<EOF1' >> $GITHUB_ENV
-          git commit -m "sss" $2 >> $GITHUB_ENV
-          echo 'EOF1' >> $GITHUB_ENV
-          echo "RESULT_GIT: ${{ env.RESULT_GIT }}"
-          if [[ "${{ env.RESULT_GIT }}" != "*nothing to commit, working tree clean*" ]]; then \
+          git commit -m "$temp1"
+          export out_command="$?"
+          if [ "$out_command" -ne 0 ]; then \
             git push; \
           else \
             echo "File ${{ env.TF_LOCK_FILE }} wasn't changed. Push isn't needed"; \
           fi
+
+          # if [[ "${{ env.RESULT_GIT }}" != "*nothing to commit, working tree clean*" ]]; then \
+          #   git push; \
+          # else \
+          #   echo "File ${{ env.TF_LOCK_FILE }} wasn't changed. Push isn't needed"; \
+          # fi
       # github-actions[bot]  <github-actions[bot]@users.noreply.github.com>
 
       - name: Debug linux
