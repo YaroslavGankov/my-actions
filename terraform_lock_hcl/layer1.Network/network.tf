@@ -42,10 +42,10 @@ resource "aws_subnet" "public_subnets" {
 }
 resource "aws_route_table" "public_subnets" {
     vpc_id = aws_vpc.skiff_vpc.id
-    route {
-        cidr_block = "0.0.0.0/0"
-        gateway_id = aws_internet_gateway.main_gateway.id
-    }
+    # route {
+    #     cidr_block = "0.0.0.0/0"
+    #     gateway_id = aws_internet_gateway.main_gateway.id
+    # }
     tags = {
         Name = "${var.vpc_cidr_mask16}.x.x-${var.name_project}-public-${var.env}"
     }
