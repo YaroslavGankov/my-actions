@@ -23,6 +23,8 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
       
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -156,7 +158,7 @@ jobs:
             git add ${{ env.TF_LOCK_FILE }}; \
             temp1=$(echo "Automated commit: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))"); \
             git commit -m "$temp1"; \
-            git push origin ${GITHUB_HEAD_REF##*/}; \
+            git push; \
           else \
             echo "File ${{ env.TF_LOCK_FILE }} wasn't changed. Push isn't needed"; \
           fi
