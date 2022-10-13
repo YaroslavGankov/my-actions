@@ -121,9 +121,9 @@ jobs:
           echo "set env 'RESULT_GIT:'"
           temp1=$(echo "Automated commit: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))")
           echo $temp1
-          echo 'RESULT_GIT<<EOF' >> $GITHUB_ENV
-          git commit -m "sss" >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
+          echo 'RESULT_GIT<<EOF1' >> $GITHUB_ENV
+          git commit -m "sss" $2 >> $GITHUB_ENV
+          echo 'EOF1' >> $GITHUB_ENV
           echo "RESULT_GIT: ${{ env.RESULT_GIT }}"
           if [[ "${{ env.RESULT_GIT }}" != "*nothing to commit, working tree clean*" ]]; then \
             git push; \
