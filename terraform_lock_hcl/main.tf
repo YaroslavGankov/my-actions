@@ -100,6 +100,6 @@ output "output_public_subnet_ids" {
   value = module.create_skiff_VPC_and_subnets.public_subnet_ids
 }
 
-output "id_servers" {
-  value = module.create_simple_public_instance.id_aws_instances
-}
+# output "id_servers" {
+#   value = module.create_simple_public_instance.id_aws_instances
+# }
