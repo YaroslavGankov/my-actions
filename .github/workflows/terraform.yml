@@ -13,8 +13,10 @@ jobs:
         os: [ ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     env:
-      PATH_TERRAFORM_PROVIDERS: terraform_lock_hcl
+      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
+      PATH_TERRAFORM_PROVIDERS: .terraform/providers/
       TF_ORIGIN_PROVIDER: providers.tf
+      TF_LOCK_FILE: .terraform.lock.hcl
       WORKING_DIRECTORY: terraform_lock_hcl #my dir with tf-files
     defaults:
       run:
@@ -34,6 +36,16 @@ jobs:
         with:
           terraform_wrapper: true
           terraform_version: 1.2.5
+
+      - name: Make directory for Cache Providers
+        run: |
+          mkdir -p "$TF_PLUGIN_CACHE_DIR"
+        continue-on-error: true
+      
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check -diff
+        continue-on-error: true
       
        #сначала кешируем файл providers.tf и сверяем его
       - name: Check file providers.tf
@@ -54,7 +66,6 @@ jobs:
         run: |
           echo "startuem"
           terraform init
-        continue-on-error: true
 
       #кешируем провайдеры
       - name: Cache_Terraform_Providers
@@ -76,14 +87,33 @@ jobs:
           echo "-----------------------------------"
           cat .terraform.lock.hcl
           echo "-----------------------------------"
+        continue-on-error: true
 
       #если по какой-то причине не была пройдена Init ранее, то она пройдёт сейчас
       - name: Terraform Init
-        if: ${{ steps.cache_providers.outputs.cache-hit != 'true' && steps.first_init.outcome != 'success' }}
+        if: ${{ steps.first_init.outcome != 'success' }}
         id: init
+        run: terraform init
+        continue-on-error: true
+      
+      #если terraform init не запускется по причине необходимости upgrade, то запускаем terraform init -upgrade
+      - name: Terraform Init -upgrade
+        if: ${{ steps.init.outcome != 'success' }}
+        id: init_upgrade
         run: |
-          terraform init
-      #тут, наверное, нужно добавить какой-нибудь output для контроля, ведь этот шаг будет запускаться в случае аварии с кешем или с Init выше
+          terraform init -upgrade
+
+      #фиксируем провайдеры для различных платформ (в случае применения terraform init -upgrade нужно снова их фиксировать)
+      - name: Lock providers for desired platforms
+        if: ${{ steps.init_upgrade.outcome == 'success' }}
+        run: |
+          terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
+          git config --global user.name "AutoCommit"
+          git config --global user.email "AutoCommit@users.noreply.github.com"
+          git add ${{ env.TF_LOCK_FILE }}
+          git commit -m "Automated commit file: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))"
+          git push
+      # github-actions[bot]  <github-actions[bot]@users.noreply.github.com>
 
       - name: Debug linux
         if: ${{ matrix.os != 'windows-latest' }}
@@ -109,3 +139,6 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
+      
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
