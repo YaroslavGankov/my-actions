@@ -59,7 +59,7 @@ jobs:
           #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
           path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
           #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
-          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-2
+          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-3
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
@@ -106,15 +106,22 @@ jobs:
           terraform init -upgrade
 
       #фиксируем провайдеры для различных платформ (в случае применения terraform init -upgrade нужно снова их фиксировать)
-      - name: Lock providers for desired platforms
+      - name: Lock providers for desired platforms and push the file
         if: ${{ steps.init_upgrade.outcome == 'success' }}
         run: |
+          # читаем хэш исходного файла и отправляем коммит в случае, если старый и новый файлы отличаются
+          ${{ hashFiles(env.TF_LOCK_FILE) }}
           terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
           git config --global user.name "AutoCommit"
           git config --global user.email "AutoCommit@users.noreply.github.com"
           git add ${{ env.TF_LOCK_FILE }}
-          git commit -m "Automated commit file: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))"
-          git push
+          result_git=$(git commit -m "Automated commit: ${{ env.TF_LOCK_FILE }}" -m "($(date +%Y%m%d_%H%M%S))")
+          echo $result_git
+          if [[ "$result_git" != "*nothing to commit, working tree clean*" ]]; then \
+            git push; \
+          else \
+            echo "File ${{ env.TF_LOCK_FILE }} wasn't changed. Push isn't needed"; \
+          fi
       # github-actions[bot]  <github-actions[bot]@users.noreply.github.com>
 
       - name: Debug linux
