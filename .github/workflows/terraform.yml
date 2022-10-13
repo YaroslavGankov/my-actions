@@ -118,14 +118,14 @@ jobs:
           git config --global user.email "AutoCommit@users.noreply.github.com"
           echo "git add:"
           git add ${{ env.TF_LOCK_FILE }}
-          echo "set env 'result_git:'"
+          echo "set env 'RESULT_GIT:'"
           temp1=$(echo "Automated commit: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))")
           echo $temp1
-          echo 'result_git<<EOF' >> $GITHUB_ENV
-          git commit -m "$temp1" >> $GITHUB_ENV
+          echo 'RESULT_GIT<<EOF' >> $GITHUB_ENV
+          git commit -m "sss" >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
-          echo "result_git: $result_git"
-          if [[ "$result_git" != "*nothing to commit, working tree clean*" ]]; then \
+          echo "RESULT_GIT: ${{ env.RESULT_GIT }}"
+          if [[ "${{ env.RESULT_GIT }}" != "*nothing to commit, working tree clean*" ]]; then \
             git push; \
           else \
             echo "File ${{ env.TF_LOCK_FILE }} wasn't changed. Push isn't needed"; \
