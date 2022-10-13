@@ -132,10 +132,10 @@ jobs:
 
       #фиксируем провайдеры для различных платформ (в случае применения terraform init -upgrade нужно снова их фиксировать)
       - name: Lock providers for desired platforms and push the file
-        #if: ${{ steps.init_upgrade.outcome == 'success' }} # || env.HASH_LOCK_FILE_PREVIOUS_GH == '' }}
+        if: ${{ steps.init_upgrade.outcome == 'success' }} || env.HASH_LOCK_FILE_PREVIOUS_GH == '' }}
         run: |
           # читаем хэш исходного файла и отправляем коммит в случае, если старый и новый файлы отличаются
-          # export HASH_LOCK_FILE_PREVIOUS=${{ hashFiles(format('{0}{1}{2}{3}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE,'_old')) }}
+          export HASH_LOCK_FILE_PREVIOUS=${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}
           echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
           echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
           terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
