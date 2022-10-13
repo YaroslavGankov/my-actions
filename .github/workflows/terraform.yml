@@ -152,7 +152,7 @@ jobs:
           if [[ "$HASH_LOCK_FILE_PREVIOUS" != "$HASH_LOCK_FILE_CURRENT"  ]]; then \
             echo "start git actions:"; \
             echo "git config:"; \
-            git config --global user.name "AutoCommit"; \
+            git config --global user.name "AutoCommit [bot]"; \
             git config --global user.email "AutoCommit@users.noreply.github.com"; \
             echo "git add:"; \
             git add ${{ env.TF_LOCK_FILE }}; \
