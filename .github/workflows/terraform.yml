@@ -120,7 +120,9 @@ jobs:
           git add ${{ env.TF_LOCK_FILE }}
           echo "set env 'result_git:'"
           echo 'result_git<<EOF' >> $GITHUB_ENV
-          git commit -m "Automated commit: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))" >> $GITHUB_ENV
+          temp1=$(echo "Automated commit: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))")
+          echo $temp1
+          git commit -m "$temp1" >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
           echo "result_git: $result_git"
           if [[ "$result_git" != "*nothing to commit, working tree clean*" ]]; then \
