@@ -67,7 +67,11 @@ jobs:
         id: first_init
         run: |
           echo "startuem"
-          terraform init
+          export TEMP1=$(terraform init)
+          echo "-----------------------"
+          echo $TEMP1
+          echo "-----------------------"
+        continue-on-error: true
 
       #кешируем провайдеры
       - name: Cache_Terraform_Providers
