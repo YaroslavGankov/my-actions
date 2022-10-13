@@ -39,6 +39,7 @@ jobs:
 
       - name: Make directory for Cache Providers
         run: |
+          pwd
           mkdir -p "$TF_PLUGIN_CACHE_DIR"
         continue-on-error: true
       
