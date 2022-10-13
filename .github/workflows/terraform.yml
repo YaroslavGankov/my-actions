@@ -97,14 +97,15 @@ jobs:
 
       #если по какой-то причине не была пройдена Init ранее, то она пройдёт сейчас
       - name: Terraform Init
-        if: ${{ steps.first_init.outcome != 'success' && steps.first_init.outcome != 'failure' }}
+        if: ${{ steps.first_init.conclusion != 'success' }}
+        #if: ${{ steps.first_init.conclusion != 'success' && steps.first_init.outcome != 'failure' }}
         id: init
         run: terraform init
         continue-on-error: true
       
       #если terraform init не запускется по причине необходимости upgrade, то запускаем terraform init -upgrade
       - name: Terraform Init -upgrade
-        if: ${{ steps.init.outcome == 'failure' }}
+        if: ${{ steps.first_init.conclusion != 'success' && steps.init.outcome == 'failure' }}
         id: init_upgrade
         run: terraform init -upgrade
 
