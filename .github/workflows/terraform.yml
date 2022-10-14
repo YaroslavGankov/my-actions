@@ -139,6 +139,9 @@ jobs:
           echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
           echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
           rm -r ${{ env.TF_PLUGIN_CACHE_DIR }}/*
+          echo "----------lock start------------"
+          cat .terraform.lock.hcl
+          echo "----------lock end------------"
           terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
           export HASH_LOCK_FILE_CURRENT=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
           echo "HASH_LOCK_FILE_CURRENT: $HASH_LOCK_FILE_CURRENT"
