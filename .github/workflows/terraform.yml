@@ -42,8 +42,8 @@ jobs:
 
       - name: Make directory for Cache Providers
         run: |
-          echo "'${{ defaults.run.working-directory }}':"
-          echo ${{ defaults.run.working-directory }}
+          echo "'${{ jobs.build.defaults.run.working-directory }}':"
+          echo ${{ jobs.build.defaults.run.working-directory }}
           pwd
           mkdir -p "$TF_PLUGIN_CACHE_DIR"
           ls -la "$TF_PLUGIN_CACHE_DIR"
