@@ -1,4 +1,4 @@
-#
+##
 name: Terraform init/plan/apply
 on:
   push:
