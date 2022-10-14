@@ -190,7 +190,7 @@ jobs:
             echo "git add:"; \
             git add ${{ env.TF_LOCK_FILE }}; \
             temp_date1="($(date +%Y%m%d_%H%M%S))"
-            temp1=$(echo "Automated commit: ${{ env.TF_LOCK_FILE }} $temp_date1"); \
+            temp1="Automated commit: ${{ env.TF_LOCK_FILE }} $temp_date1"; \
             git commit -m "$temp1"; \
             git push; \
           else \
