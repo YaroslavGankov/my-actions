@@ -86,7 +86,15 @@ jobs:
           echo "startuem"
           #export TEMP1=$(terraform init)
           terraform init
-          terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
+          export PHRASE_IN_LOCK_FILE="#locked-providers-for-linux-darwin-windows-from-teg"
+          if [ $(grep "$PHRASE_IN_LOCK_FILE" "${{ env.TF_LOCK_FILE }}") ]; then
+              echo "Phrase is finded"; \
+          else \
+              echo "Start lock terraform providers:"; \
+              terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64 ; \
+              echo "$PHRASE_IN_LOCK_FILE" >> "${{ env.TF_LOCK_FILE }}" ; \
+          fi
+          #terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
           # echo "-----------------------"
           # echo $TEMP1
           # echo "-----------------------"
@@ -128,11 +136,18 @@ jobs:
       
       #если terraform init не запускется по причине необходимости upgrade, то запускаем terraform init -upgrade
       - name: Terraform init -upgrade
-        if: ${{ steps.first_init.outcome != 'success' && steps.init.outcome != 'success' }}
+#        if: ${{ steps.first_init.outcome != 'success' && steps.init.outcome != 'success' }}
         id: init_upgrade
         run: |
           terraform init -upgrade
-          terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
+          export PHRASE_IN_LOCK_FILE="#locked-providers-for-linux-darwin-windows-from-teg"
+          if [ $(grep "$PHRASE_IN_LOCK_FILE" "${{ env.TF_LOCK_FILE }}") ]; then
+              echo "Phrase is finded"; \
+          else \
+              echo "Start lock terraform providers:"; \
+              terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64 ; \
+              echo "$PHRASE_IN_LOCK_FILE" >> "${{ env.TF_LOCK_FILE }}" ; \
+          fi
 
 
       - name: Debug linux
