@@ -63,7 +63,7 @@ jobs:
           #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
           path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
           #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
-          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-test-cache-2
+          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-test-cache-3
 
       - name: Calculate hash for file ${{ env.TF_LOCK_FILE }}
         run: |
@@ -102,7 +102,7 @@ jobs:
             ${{ env.TF_PLUGIN_CACHE_DIR }}
 #            ${{ format('{0}{1}',env.WORKING_DIRECTORY,'/.terraform.lock.hcl') }}
           #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
-          key: ${{ runner.os }}-providers-cache-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-test-cache-2
+          key: ${{ runner.os }}-providers-cache-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-test-cache-3
           #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
 
       - name: Debug linux & ls -la "$TF_PLUGIN_CACHE_DIR"
@@ -177,7 +177,7 @@ jobs:
             echo "start git actions:"; \
             echo "git config:"; \
             git config --global user.name "AutoCommit [bot]"; \
-            git config --global user.email "AutoCommit@users.noreply.github.com"; \
+            git config --global user.email "AutoCommit[bot]@users.noreply.github.com"; \
             echo "git add:"; \
             git add ${{ env.TF_LOCK_FILE }}; \
             temp1=$(echo "Automated commit: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))"); \
