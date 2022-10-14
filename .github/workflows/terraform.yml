@@ -1,0 +1,227 @@
+###working version without deleting
+name: Terraform init/plan/apply
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ] #, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
+      PATH_TERRAFORM_PROVIDERS: .terraform/providers/
+      TF_ORIGIN_PROVIDER: providers.tf
+      TF_LOCK_FILE: .terraform.lock.hcl
+      WORKING_DIRECTORY: terraform_lock_hcl #my dir with tf-files
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: true
+          terraform_version: 1.2.5
+
+      - name: Make directory for Cache Providers
+        run: |
+          pwd
+          mkdir -p "$TF_PLUGIN_CACHE_DIR"
+          ls -la "$TF_PLUGIN_CACHE_DIR"
+          mkdir -p "/Users/runner/.terraform.d/plugin-cache"
+        continue-on-error: true
+      
+      # - name: Terraform Format
+      #   id: fmt
+      #   run: terraform fmt -check -diff
+      #   continue-on-error: true
+      
+      #  сначала кешируем файл providers.tf и сверяем его
+      - name: Check file providers.tf
+        id: check_file_origin_providers_tf
+        uses: actions/cache@v3
+        with:
+          ##working variant:
+          #path: tf-origins/providers.tf
+          #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
+          path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
+          #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
+          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-test-cache-2
+
+      - name: Calculate hash for file ${{ env.TF_LOCK_FILE }}
+        run: |
+          export HASH_LOCK_FILE_PREVIOUS=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
+          echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
+          echo "HASH_LOCK_FILE_PREVIOUS_GH=$HASH_LOCK_FILE_PREVIOUS" >> $GITHUB_ENV
+          echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
+
+      - name: Debug cat .terraform.lock.hcl
+        run: cat .terraform.lock.hcl
+        continue-on-error: true
+
+      #если файл providers.tf не тот, то запускаем Init
+      - name: First Terraform Init
+        if: ${{ steps.check_file_origin_providers_tf.outputs.cache-hit != 'true' || env.HASH_LOCK_FILE_PREVIOUS_GH == '' }}
+        id: first_init
+        run: |
+          echo "startuem"
+          #export TEMP1=$(terraform init)
+          terraform init
+          terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
+          # echo "-----------------------"
+          # echo $TEMP1
+          # echo "-----------------------"
+        continue-on-error: true
+
+      # кешируем провайдеры
+      - name: Cache_Terraform_Providers
+        id: cache_providers
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS) }}
+            ${{ env.TF_PLUGIN_CACHE_DIR }}
+#            ${{ format('{0}{1}',env.WORKING_DIRECTORY,'/.terraform.lock.hcl') }}
+          #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
+          key: ${{ runner.os }}-providers-cache-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-test-cache-2
+          #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
+
+      - name: Debug linux & ls -la "$TF_PLUGIN_CACHE_DIR"
+        if: ${{ matrix.os != 'windows-latest' }}
+        run: |
+          echo '${{ github.event.pull_request.head.ref }}:'
+          echo ${{ github.event.pull_request.head.ref }}
+          #echo ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }} >> ${{ env.TF_LOCK_FILE }}_old
+          # export HASH_LOCK_FILE_PREVIOUS=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
+          # echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
+          # echo "HASH_LOCK_FILE_PREVIOUS_GH=$HASH_LOCK_FILE_PREVIOUS" >> $GITHUB_ENV
+          # echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
+          echo "ls -la"
+          ls -la
+          echo "-----------------------------------"
+          cat .terraform.lock.hcl
+          echo "-----------------------------------"
+          ls -la "$TF_PLUGIN_CACHE_DIR"
+        continue-on-error: true
+
+      #если по какой-то причине не была пройдена Init ранее, то она пройдёт сейчас
+      - name: Terraform Init
+        if: ${{ steps.first_init.conclusion != 'success' }}
+        #if: ${{ steps.first_init.conclusion != 'success' && steps.first_init.outcome != 'failure' }}
+        id: init
+        run: terraform init
+        continue-on-error: true
+      
+      #если terraform init не запускется по причине необходимости upgrade, то запускаем terraform init -upgrade
+      - name: Terraform init -upgrade
+        if: ${{ steps.first_init.outcome != 'success' && steps.init.outcome != 'success' }}
+        id: init_upgrade
+        run: |
+          terraform init -upgrade
+          terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
+
+
+      - name: Debug linux
+        if: ${{ matrix.os != 'windows-latest' }}
+        run: |
+          echo ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
+          echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
+          echo "ls -la"
+          ls -la
+          echo "-----------------------------------"
+          cat .terraform.lock.hcl
+          echo "-----------------------------------"
+        continue-on-error: true
+
+      #фиксируем провайдеры для различных платформ (в случае применения terraform init -upgrade нужно снова их фиксировать)
+      - name: Lock providers for desired platforms and push the file
+        if: ${{ steps.init_upgrade.outcome == 'success' || env.HASH_LOCK_FILE_PREVIOUS_GH == '' }}
+        run: |
+          #rm -r .terraform
+          # echo "----------rm TF_PLUGIN_CACHE_DIR start------------"
+          # rm -r ${{ env.TF_PLUGIN_CACHE_DIR }}/*
+          # echo "----------rm TF_PLUGIN_CACHE_DIR end------------"
+          # читаем хэш исходного файла и отправляем коммит в случае, если старый и новый файлы отличаются
+          export HASH_LOCK_FILE_PREVIOUS=${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}
+          echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
+          echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
+          echo "----------lock start------------"
+          cat .terraform.lock.hcl
+          echo "----------lock end------------"
+          # terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
+          export HASH_LOCK_FILE_CURRENT=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
+          echo "HASH_LOCK_FILE_CURRENT: $HASH_LOCK_FILE_CURRENT"
+          echo "HASH_LOCK_FILE_CURRENT_GH=ololo #${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}" >> $GITHUB_ENV
+          echo "HASH_LOCK_FILE_CURRENT_GH: ${{ env.HASH_LOCK_FILE_CURRENT_GH }}"
+          echo "--------------------"
+          echo ${GITHUB_REF}
+          echo ${GITHUB_REF##*/}
+          echo ${GITHUB_HEAD_REF}
+          echo ${GITHUB_HEAD_REF##*/}          
+          echo "--------------------"
+          if [[ "$HASH_LOCK_FILE_PREVIOUS" != "$HASH_LOCK_FILE_CURRENT"  ]]; then \
+            echo "start git actions:"; \
+            echo "git config:"; \
+            git config --global user.name "AutoCommit [bot]"; \
+            git config --global user.email "AutoCommit@users.noreply.github.com"; \
+            echo "git add:"; \
+            git add ${{ env.TF_LOCK_FILE }}; \
+            temp1=$(echo "Automated commit: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))"); \
+            git commit -m "$temp1"; \
+            git push; \
+          else \
+            echo "File ${{ env.TF_LOCK_FILE }} wasn't changed. Push isn't needed"; \
+          fi
+
+          # if [[ "${{ env.RESULT_GIT }}" != "*nothing to commit, working tree clean*" ]]; then \
+          #   git push; \
+          # else \
+          #   echo "File ${{ env.TF_LOCK_FILE }} wasn't changed. Push isn't needed"; \
+          # fi
+      # github-actions[bot]  <github-actions[bot]@users.noreply.github.com>
+
+      - name: Debug linux
+        if: ${{ matrix.os != 'windows-latest' }}
+        run: |
+          echo ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
+          echo "ls -la"
+          ls -la
+          echo "-----------------------------------"
+          cat .terraform.lock.hcl
+          echo "-----------------------------------"
+      
+      - name: Debug windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          echo "dir"
+          dir
+          echo "dir C"
+          dir ${{ env.TERRAFORM_CLI_PATH }}
+          echo "-----------------------------------"
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
+
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve
+      
+      # - name: Terraform Destroy
+      #   run: terraform destroy -auto-approve
