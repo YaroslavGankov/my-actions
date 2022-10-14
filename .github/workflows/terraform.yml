@@ -63,6 +63,16 @@ jobs:
           #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
           key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-test-cache-2
 
+      - name: Calculate hash for file ${{ env.TF_LOCK_FILE }}
+        run: |
+          export HASH_LOCK_FILE_PREVIOUS=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
+          echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
+          echo "HASH_LOCK_FILE_PREVIOUS_GH=$HASH_LOCK_FILE_PREVIOUS" >> $GITHUB_ENV
+          echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
+
+      - name: Debug cat .terraform.lock.hcl
+        run: cat .terraform.lock.hcl
+
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
         if: ${{ steps.check_file_origin_providers_tf.outputs.cache-hit != 'true' }}
@@ -71,9 +81,10 @@ jobs:
           echo "startuem"
           #export TEMP1=$(terraform init)
           terraform init
-          echo "-----------------------"
-          echo $TEMP1
-          echo "-----------------------"
+          terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
+          # echo "-----------------------"
+          # echo $TEMP1
+          # echo "-----------------------"
         continue-on-error: true
 
       # кешируем провайдеры
@@ -95,10 +106,10 @@ jobs:
           echo '${{ github.event.pull_request.head.ref }}:'
           echo ${{ github.event.pull_request.head.ref }}
           #echo ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }} >> ${{ env.TF_LOCK_FILE }}_old
-          export HASH_LOCK_FILE_PREVIOUS=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
-          echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
-          echo "HASH_LOCK_FILE_PREVIOUS_GH=$HASH_LOCK_FILE_PREVIOUS" >> $GITHUB_ENV
-          echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
+          # export HASH_LOCK_FILE_PREVIOUS=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
+          # echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
+          # echo "HASH_LOCK_FILE_PREVIOUS_GH=$HASH_LOCK_FILE_PREVIOUS" >> $GITHUB_ENV
+          # echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
           echo "ls -la"
           ls -la
           echo "-----------------------------------"
@@ -120,6 +131,8 @@ jobs:
         id: init_upgrade
         run: |
           terraform init -upgrade
+          terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
+
 
       - name: Debug linux
         if: ${{ matrix.os != 'windows-latest' }}
@@ -148,7 +161,7 @@ jobs:
           echo "----------lock start------------"
           cat .terraform.lock.hcl
           echo "----------lock end------------"
-          terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
+          # terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
           export HASH_LOCK_FILE_CURRENT=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
           echo "HASH_LOCK_FILE_CURRENT: $HASH_LOCK_FILE_CURRENT"
           echo "HASH_LOCK_FILE_CURRENT_GH=ololo #${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}" >> $GITHUB_ENV
