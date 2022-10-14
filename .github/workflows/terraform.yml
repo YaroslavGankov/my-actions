@@ -174,8 +174,8 @@ jobs:
           if [[ "${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}" != "$HASH_LOCK_FILE_CURRENT"  ]]; then \
             echo "start git actions:"; \
             echo "git config:"; \
-            git config --global user.name "AutoCommit [bot]"; \
-            git config --global user.email "AutoCommit[bot]@users.noreply.github.com"; \
+            git config --global user.name "AutoCommit.terraform.lock.hcl[bot]"; \
+            git config --global user.email "autocommit.terraform.lock.hcl[bot]@users.noreply.github.com"; \
             echo "git add:"; \
             git add ${{ env.TF_LOCK_FILE }}; \
             temp1=$(echo "Automated commit: ${{ env.TF_LOCK_FILE }} ($(date +%Y%m%d_%H%M%S))"); \
