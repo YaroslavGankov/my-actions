@@ -119,14 +119,14 @@ jobs:
         id: init_upgrade
         run: |
           rm -r .terraform
-          echo "----------rm TF_PLUGIN_CACHE_DIR start------------"
-          ls -la ${{ env.TF_PLUGIN_CACHE_DIR }}
-          cd ${{ env.TF_PLUGIN_CACHE_DIR }}
-          rm -r *
-          cd -
-          pwd
-          ls -la ${{ env.TF_PLUGIN_CACHE_DIR }}
-          echo "----------rm TF_PLUGIN_CACHE_DIR end------------"
+          # echo "----------rm TF_PLUGIN_CACHE_DIR start------------"
+          # ls -la ${{ env.TF_PLUGIN_CACHE_DIR }}
+          # cd ${{ env.TF_PLUGIN_CACHE_DIR }}
+          # rm -r *
+          # cd -
+          # pwd
+          # ls -la ${{ env.TF_PLUGIN_CACHE_DIR }}
+          # echo "----------rm TF_PLUGIN_CACHE_DIR end------------"
           terraform init -upgrade
 
       - name: Debug linux
