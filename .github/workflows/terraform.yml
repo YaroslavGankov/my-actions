@@ -167,7 +167,7 @@ jobs:
           # echo ${GITHUB_HEAD_REF}
           # echo ${GITHUB_HEAD_REF##*/}          
           # echo "--------------------"
-          export HASH_LOCK_FILE_CURRENT=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}"
+          export HASH_LOCK_FILE_CURRENT="${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}"
           echo "${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
           echo "${{ env.HASH_LOCK_FILE_CURRENT }}"
           #if [[ "$HASH_LOCK_FILE_PREVIOUS" != "$HASH_LOCK_FILE_CURRENT"  ]]; then \
