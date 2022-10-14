@@ -72,6 +72,7 @@ jobs:
 
       - name: Debug cat .terraform.lock.hcl
         run: cat .terraform.lock.hcl
+        continue-on-error: true
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
