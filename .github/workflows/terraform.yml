@@ -139,12 +139,12 @@ jobs:
           echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
           echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
           echo "----------rm TF_PLUGIN_CACHE_DIR start------------"
-          ls la ${{ env.TF_PLUGIN_CACHE_DIR }}
+          ls -la ${{ env.TF_PLUGIN_CACHE_DIR }}
           cd ${{ env.TF_PLUGIN_CACHE_DIR }}
           rm -r *
           cd -
           pwd
-          ls la ${{ env.TF_PLUGIN_CACHE_DIR }}
+          ls -la ${{ env.TF_PLUGIN_CACHE_DIR }}
           echo "----------rm TF_PLUGIN_CACHE_DIR end------------"
           echo "----------lock start------------"
           cat .terraform.lock.hcl
