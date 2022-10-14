@@ -2,7 +2,6 @@
 name: Terraform init/plan/apply
 on:
   push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
@@ -93,6 +92,8 @@ jobs:
       - name: Debug linux
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
+          echo '${{ github.event.pull_request.head.ref }}:'
+          echo ${{ github.event.pull_request.head.ref }}
           #echo ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }} >> ${{ env.TF_LOCK_FILE }}_old
           export HASH_LOCK_FILE_PREVIOUS=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
           echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
