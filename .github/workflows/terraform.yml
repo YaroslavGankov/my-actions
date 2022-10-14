@@ -66,7 +66,7 @@ jobs:
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
-        # if: ${{ steps.check_file_origin_providers_tf.outputs.cache-hit != 'true' }}
+        if: ${{ steps.check_file_origin_providers_tf.outputs.cache-hit != 'true' }}
         id: first_init
         run: |
           echo "startuem"
@@ -118,10 +118,10 @@ jobs:
         if: ${{ steps.first_init.outcome != 'success' && steps.init.outcome != 'success' }}
         id: init_upgrade
         run: |
-          rm -r .terraform
-          echo "----------rm TF_PLUGIN_CACHE_DIR start------------"
-          rm -r ${{ env.TF_PLUGIN_CACHE_DIR }}/*
-          echo "----------rm TF_PLUGIN_CACHE_DIR end------------"
+          # rm -r .terraform
+          # echo "----------rm TF_PLUGIN_CACHE_DIR start------------"
+          # rm -r ${{ env.TF_PLUGIN_CACHE_DIR }}/*
+          # echo "----------rm TF_PLUGIN_CACHE_DIR end------------"
           terraform init -upgrade
 
       - name: Debug linux
