@@ -1,0 +1,202 @@
+name: "Test Infracost"
+#3333
+#4444
+#5555
+
+on:
+  workflow_dispatch:
+  
+  pull_request:
+    branches: [ main ]
+    paths:
+        - 'infracost-test/**'
+        - '.github/workflows/infracost_action.yml'
+jobs:
+  Test_Infracost:
+    name: "Test Infracost"
+    runs-on: ubuntu-latest
+    env:
+      WORKING_DIRECTORY: infracost-test
+      INFRACOST_ENABLE_CLOUD: false
+    defaults:
+      run:
+        working-directory: infracost-test/
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: true
+          terraform_version: 1.2.5
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check -diff
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false
+
+
+      - name: Infracost. Setup
+        uses: infracost/actions/setup@v2
+        # See https://github.com/infracost/actions/tree/master/setup for other inputs
+        # If you can't use this action, see Docker images in https://infracost.io/cicd
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+
+      #checkout main branch and
+      - name: Infracost. Checkout main branch for diff
+        uses: actions/checkout@v2
+        with:
+          path: 'checkout_main'
+          ref: '${{ github.event.pull_request.base.ref }}'
+
+
+      # - name: Debug 1 (echo and other)
+      #   run: |
+      #     echo "pwd:"
+      #     pwd
+      #     echo "echo GITHUB_WORKSPACE:"
+      #     echo $GITHUB_WORKSPACE
+      #     echo "echo HOME:"
+      #     echo $HOME
+      #     echo "ls -la:"
+      #     ls -la
+      #     echo "tree:"
+      #     tree $HOME
+          
+      
+      #estimate costs for the main branch
+      - name: Infracost. Cost for main branch
+        id: infracost_main_branch
+        run: |
+          export WORKING_DIRECTORY_LOCAL="$GITHUB_WORKSPACE/checkout_main/$WORKING_DIRECTORY" ; \
+          export USAGEFILE="$WORKING_DIRECTORY_LOCAL/infracost_usage.yml"; \
+          if [ -e "$USAGEFILE" ] ; then \
+          infracost breakdown --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" ; \
+          if [ $? == 0 ] ; then \
+          echo "Correct file found: '$USAGEFILE'"; \
+          echo '::set-output name=FILEEXIST::yes'; \
+          infracost breakdown --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
+                                        --format="json" \
+                                        --out-file="/tmp/infracost-main.json" ; \
+          else
+          echo "Incorrect usage-file: '$USAGEFILE'. Processing without usage-file"; \
+          echo '::set-output name=FILEEXIST::incorrect'; \
+          infracost breakdown --path="$WORKING_DIRECTORY_LOCAL" \
+                              --format="json" \
+                              --out-file="/tmp/infracost-main.json"
+          fi
+          else \
+          echo "No usage-file found: '$USAGEFILE'. Processing without usage-file"; \
+          echo '::set-output name=FILEEXIST::no'; \
+          infracost breakdown --path="$WORKING_DIRECTORY_LOCAL" \
+                              --format="json" \
+                              --out-file="/tmp/infracost-main.json"
+          fi
+
+      # - name: Debug 2 (echo and other)
+      #   run: |
+      #     echo "pwd:"
+      #     pwd
+      #     echo "echo GITHUB_WORKSPACE:"
+      #     echo $GITHUB_WORKSPACE
+      #     echo "ls -la:"
+      #     ls -la
+      #     ls -la $HOME
+      #     ls -la $HOME/work
+      #     ls -la $HOME/work/my-actions
+      #     ls -la $HOME/work/my-actions/my-actions
+      #     echo "tree:"
+      #     tree $HOME
+
+      - name: Infracost. Delete dir main branch
+        run: rm -r "$GITHUB_WORKSPACE/checkout_main"
+
+      - name: Infracost. Diff cost for current branch
+        id: infracost_diff_with_pr
+        run: |
+          export WORKING_DIRECTORY_LOCAL="." ; \
+          export USAGEFILE="$WORKING_DIRECTORY_LOCAL/infracost_usage.yml"; \
+          if [ -e "$USAGEFILE" ] ; then \
+          infracost diff --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
+                                        --format="json" \
+                                        --compare-to="/tmp/infracost-main.json" \
+                                        --out-file="/tmp/infracost.json" ; \
+          if [ $? == 0 ] ; then \
+          echo "Correct file found: '$USAGEFILE'"; \
+          echo '::set-output name=FILEEXIST::yes'; \
+          infracost diff --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
+                                        --format="json" \
+                                        --compare-to="/tmp/infracost-main.json" \
+                                        --out-file="/tmp/infracost.json" ; \
+          else
+          echo "Incorrect usage-file: '$USAGEFILE'. Processing without usage-file"; \
+          echo '::set-output name=FILEEXIST::incorrect'; \
+          infracost diff --sync-usage-file --usage-file="$USAGEFILE" --path="$WORKING_DIRECTORY_LOCAL" \
+                                        --format="json" \
+                                        --compare-to="/tmp/infracost-main.json" \
+                                        --out-file="/tmp/infracost.json" ; \
+          fi
+          else \
+          echo "No usage-file found: '$USAGEFILE'. Processing without usage-file"; \
+          echo '::set-output name=FILEEXIST::no'; \
+          infracost diff --path="$WORKING_DIRECTORY_LOCAL" \
+                              --format="json" \
+                              --compare-to="/tmp/infracost-main.json" \
+                              --out-file="/tmp/infracost.json"
+          fi
+
+      - name: Infracost. Post comment to PR
+        if: github.event_name == 'pull_request'
+        run: |
+            infracost comment github --path="/tmp/infracost.json" \
+                                     --repo="$GITHUB_REPOSITORY" \
+                                     --github-token=${{github.token}} \
+                                     --pull-request=${{github.event.pull_request.number}} \
+                                     --behavior="update"
+
+      - name: Infracost. Warnings
+        run: |
+          echo "Usage-file for main branch: ${{ steps.infracost_main_branch.outputs.FILEEXIST }}"
+          echo "Usage-file for PR: ${{ steps.infracost_diff_with_pr.outputs.FILEEXIST }}"
+          if [ "${{ steps.infracost_main_branch.outputs.FILEEXIST }}" != "yes" ] || [ "${{ steps.infracost_diff_with_pr.outputs.FILEEXIST }}" != "yes" ]; then \
+          exit 1 ; \
+          fi
+        continue-on-error: true
+
+      # - name: Debug 3 (echo and other)
+      #   run: |
+      #     echo "pwd:"
+      #     pwd
+      #     echo "echo GITHUB_WORKSPACE:"
+      #     echo $GITHUB_WORKSPACE
+      #     echo "ls -la:"
+      #     ls -la
+      #     ls -la $HOME
+      #     ls -la $HOME/work
+      #     ls -la $HOME/work/my-actions
+      #     echo "tree:"
+      #     tree $HOME
+      #   continue-on-error: true
+
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve -input=false
