@@ -1,4 +1,4 @@
-#project for testing infracost##
+#project for testing infracost###
 
 #--------VARIABLES
 variable "temp_vpc_cidr_mask16" {
