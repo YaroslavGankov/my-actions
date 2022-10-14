@@ -62,7 +62,7 @@ jobs:
           #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
           path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
           #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
-          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-4
+          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-test-cache-1
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
@@ -87,7 +87,7 @@ jobs:
             ${{ env.TF_PLUGIN_CACHE_DIR }}
 #            ${{ format('{0}{1}',env.WORKING_DIRECTORY,'/.terraform.lock.hcl') }}
           #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
-          key: ${{ runner.os }}-providers-cache-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}
+          key: ${{ runner.os }}-providers-cache-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-test-cache-1
           #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
 
       - name: Debug linux
@@ -119,14 +119,9 @@ jobs:
         id: init_upgrade
         run: |
           rm -r .terraform
-          # echo "----------rm TF_PLUGIN_CACHE_DIR start------------"
-          # ls -la ${{ env.TF_PLUGIN_CACHE_DIR }}
-          # cd ${{ env.TF_PLUGIN_CACHE_DIR }}
-          # rm -r *
-          # cd -
-          # pwd
-          # ls -la ${{ env.TF_PLUGIN_CACHE_DIR }}
-          # echo "----------rm TF_PLUGIN_CACHE_DIR end------------"
+          echo "----------rm TF_PLUGIN_CACHE_DIR start------------"
+          rm -r ${{ env.TF_PLUGIN_CACHE_DIR }}/*
+          echo "----------rm TF_PLUGIN_CACHE_DIR end------------"
           terraform init -upgrade
 
       - name: Debug linux
