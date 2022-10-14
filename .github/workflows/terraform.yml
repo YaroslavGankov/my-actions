@@ -67,10 +67,12 @@ jobs:
 
       - name: Calculate hash for file ${{ env.TF_LOCK_FILE }}
         run: |
-          export HASH_LOCK_FILE_PREVIOUS=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
-          echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
-          echo "HASH_LOCK_FILE_PREVIOUS_GH=$HASH_LOCK_FILE_PREVIOUS" >> $GITHUB_ENV
-          echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
+          # export HASH_LOCK_FILE_PREVIOUS=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
+          # echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
+          # echo "HASH_LOCK_FILE_PREVIOUS_GH=$HASH_LOCK_FILE_PREVIOUS" >> $GITHUB_ENV
+          # echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
+          echo "HASH_LOCK_FILE_PREVIOUS_GH=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}" >> $GITHUB_ENV
+          
 
       - name: Debug cat .terraform.lock.hcl
         run: cat .terraform.lock.hcl
@@ -108,11 +110,6 @@ jobs:
         run: |
           echo '${{ github.event.pull_request.head.ref }}:'
           echo ${{ github.event.pull_request.head.ref }}
-          #echo ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }} >> ${{ env.TF_LOCK_FILE }}_old
-          # export HASH_LOCK_FILE_PREVIOUS=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
-          # echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
-          # echo "HASH_LOCK_FILE_PREVIOUS_GH=$HASH_LOCK_FILE_PREVIOUS" >> $GITHUB_ENV
-          # echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
           echo "ls -la"
           ls -la
           echo "-----------------------------------"
