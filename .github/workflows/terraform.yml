@@ -76,7 +76,7 @@ jobs:
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
-        if: ${{ steps.check_file_origin_providers_tf.outputs.cache-hit != 'true' && env.HASH_LOCK_FILE_PREVIOUS_GH == '' }}
+        if: ${{ steps.check_file_origin_providers_tf.outputs.cache-hit != 'true' || env.HASH_LOCK_FILE_PREVIOUS_GH == '' }}
         id: first_init
         run: |
           echo "startuem"
