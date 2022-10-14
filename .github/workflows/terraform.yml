@@ -148,7 +148,7 @@ jobs:
         continue-on-error: true
 
       #фиксируем провайдеры для различных платформ (в случае применения terraform init -upgrade нужно снова их фиксировать)
-      - name: Push file ${{ env.TF_LOCK_FILE }} back to repo
+      - name: "Push file ${{ env.TF_LOCK_FILE }} back to repo"
         if: ${{ steps.init_upgrade.outcome == 'success' || env.HASH_LOCK_FILE_PREVIOUS_GH == '' }}
         run: |
           # # читаем хэш исходного файла и отправляем коммит в случае, если старый и новый файлы отличаются
