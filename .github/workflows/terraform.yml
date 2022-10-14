@@ -42,8 +42,6 @@ jobs:
 
       - name: Make directory for Cache Providers
         run: |
-          echo "'${{ jobs.build.defaults.run.working-directory }}':"
-          echo ${{ jobs.build.defaults.run.working-directory }}
           pwd
           mkdir -p "$TF_PLUGIN_CACHE_DIR"
           ls -la "$TF_PLUGIN_CACHE_DIR"
@@ -69,10 +67,6 @@ jobs:
 
       - name: Calculate hash for file ${{ env.TF_LOCK_FILE }}
         run: |
-          # export HASH_LOCK_FILE_PREVIOUS=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
-          # echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
-          # echo "HASH_LOCK_FILE_PREVIOUS_GH=$HASH_LOCK_FILE_PREVIOUS" >> $GITHUB_ENV
-          # echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
           echo "HASH_LOCK_FILE_PREVIOUS_GH=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}" >> $GITHUB_ENV
           
 
