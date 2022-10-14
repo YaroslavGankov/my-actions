@@ -43,6 +43,7 @@ jobs:
         run: |
           pwd
           mkdir -p "$TF_PLUGIN_CACHE_DIR"
+          ls -la "$TF_PLUGIN_CACHE_DIR"
           mkdir -p "/Users/runner/.terraform.d/plugin-cache"
         continue-on-error: true
       
@@ -101,7 +102,7 @@ jobs:
           key: ${{ runner.os }}-providers-cache-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-test-cache-2
           #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
 
-      - name: Debug linux
+      - name: Debug linux & ls -la "$TF_PLUGIN_CACHE_DIR"
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
           echo '${{ github.event.pull_request.head.ref }}:'
@@ -116,6 +117,7 @@ jobs:
           echo "-----------------------------------"
           cat .terraform.lock.hcl
           echo "-----------------------------------"
+          ls -la "$TF_PLUGIN_CACHE_DIR"
         continue-on-error: true
 
       #если по какой-то причине не была пройдена Init ранее, то она пройдёт сейчас
