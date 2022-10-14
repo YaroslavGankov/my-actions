@@ -152,9 +152,9 @@ jobs:
         if: ${{ steps.init_upgrade.outcome == 'success' || env.HASH_LOCK_FILE_PREVIOUS_GH == '' }}
         run: |
           #rm -r .terraform
-          echo "----------rm TF_PLUGIN_CACHE_DIR start------------"
-          rm -r ${{ env.TF_PLUGIN_CACHE_DIR }}/*
-          echo "----------rm TF_PLUGIN_CACHE_DIR end------------"
+          # echo "----------rm TF_PLUGIN_CACHE_DIR start------------"
+          # rm -r ${{ env.TF_PLUGIN_CACHE_DIR }}/*
+          # echo "----------rm TF_PLUGIN_CACHE_DIR end------------"
           # читаем хэш исходного файла и отправляем коммит в случае, если старый и новый файлы отличаются
           export HASH_LOCK_FILE_PREVIOUS=${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}
           echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
