@@ -116,7 +116,9 @@ jobs:
       - name: Terraform init -upgrade
         if: ${{ steps.first_init.outcome != 'success' && steps.init.outcome != 'success' }}
         id: init_upgrade
-        run: terraform init -upgrade
+        run: |
+          rm -r .terraform
+          terraform init -upgrade
 
       - name: Debug linux
         if: ${{ matrix.os != 'windows-latest' }}
