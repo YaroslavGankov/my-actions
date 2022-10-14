@@ -47,7 +47,7 @@ jobs:
           pwd
           mkdir -p "$TF_PLUGIN_CACHE_DIR"
           ls -la "$TF_PLUGIN_CACHE_DIR"
-          mkdir -p "/Users/runner/.terraform.d/plugin-cache"
+          #mkdir -p "/Users/runner/.terraform.d/plugin-cache"
         continue-on-error: true
       
       # - name: Terraform Format
@@ -88,8 +88,8 @@ jobs:
           echo "startuem"
           #export TEMP1=$(terraform init)
           terraform init
-          export PHRASE_IN_LOCK_FILE="#locked-providers-for-linux-darwin-windows-from-teg"
-          if [ $(grep "$PHRASE_IN_LOCK_FILE" "${{ env.TF_LOCK_FILE }}") ]; then
+          export "PHRASE_IN_LOCK_FILE"="#locked-providers-for-linux-darwin-windows-from-teg"
+          if [ $(grep -q "$PHRASE_IN_LOCK_FILE" "${{ env.TF_LOCK_FILE }}") ]; then
               echo "Phrase is found"; \
           else \
               echo "Start lock terraform providers:"; \
