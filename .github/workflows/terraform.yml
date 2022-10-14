@@ -169,7 +169,7 @@ jobs:
           # echo "--------------------"
           export HASH_LOCK_FILE_CURRENT="${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}"
           echo "${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
-          echo "${{ env.HASH_LOCK_FILE_CURRENT }}"
+          echo "$HASH_LOCK_FILE_CURRENT"
           #if [[ "$HASH_LOCK_FILE_PREVIOUS" != "$HASH_LOCK_FILE_CURRENT"  ]]; then \
           if [[ "${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}" != "$HASH_LOCK_FILE_CURRENT"  ]]; then \
             echo "start git actions:"; \
