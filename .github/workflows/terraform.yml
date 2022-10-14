@@ -13,7 +13,7 @@ jobs:
         os: [ ubuntu-latest ] #, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     env:
-      #TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
+      TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
       PATH_TERRAFORM_PROVIDERS: .terraform/providers/
       TF_ORIGIN_PROVIDER: providers.tf
       TF_LOCK_FILE: .terraform.lock.hcl
@@ -39,29 +39,29 @@ jobs:
           terraform_wrapper: true
           terraform_version: 1.2.5
 
-      # - name: Make directory for Cache Providers
-      #   run: |
-      #     pwd
-      #     mkdir -p "$TF_PLUGIN_CACHE_DIR"
-      #     mkdir -p "/Users/runner/.terraform.d/plugin-cache"
-      #   continue-on-error: true
+      - name: Make directory for Cache Providers
+        run: |
+          pwd
+          mkdir -p "$TF_PLUGIN_CACHE_DIR"
+          mkdir -p "/Users/runner/.terraform.d/plugin-cache"
+        continue-on-error: true
       
       # - name: Terraform Format
       #   id: fmt
       #   run: terraform fmt -check -diff
       #   continue-on-error: true
       
-      # #  сначала кешируем файл providers.tf и сверяем его
-      # - name: Check file providers.tf
-      #   id: check_file_origin_providers_tf
-      #   uses: actions/cache@v3
-      #   with:
-      #     ##working variant:
-      #     #path: tf-origins/providers.tf
-      #     #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
-      #     path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
-      #     #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
-      #     key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-4
+      #  сначала кешируем файл providers.tf и сверяем его
+      - name: Check file providers.tf
+        id: check_file_origin_providers_tf
+        uses: actions/cache@v3
+        with:
+          ##working variant:
+          #path: tf-origins/providers.tf
+          #path: ${{ env.WORKING_DIRECTORY, '/', env.TF_ORIGIN_PROVIDER} ) }}
+          path: ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER) }}
+          #key: ${{ runner.os }}-${{ hashFiles('tf-origins/providers.tf') }}
+          key: ${{ runner.os }}-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}-4
 
       #если файл providers.tf не тот, то запускаем Init
       - name: First Terraform Init
@@ -76,18 +76,18 @@ jobs:
           echo "-----------------------"
         continue-on-error: true
 
-#       # кешируем провайдеры
-#       - name: Cache_Terraform_Providers
-#         id: cache_providers
-#         uses: actions/cache@v3
-#         with:
-#           path: |
-#             ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS) }}
-#             ${{ env.TF_PLUGIN_CACHE_DIR }}
-# #            ${{ format('{0}{1}',env.WORKING_DIRECTORY,'/.terraform.lock.hcl') }}
-#           #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
-#           key: ${{ runner.os }}-providers-cache-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}
-#           #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
+      # кешируем провайдеры
+      - name: Cache_Terraform_Providers
+        id: cache_providers
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.PATH_TERRAFORM_PROVIDERS) }}
+            ${{ env.TF_PLUGIN_CACHE_DIR }}
+#            ${{ format('{0}{1}',env.WORKING_DIRECTORY,'/.terraform.lock.hcl') }}
+          #key checks file providers.tf and cached files from path '.terraform/providers/**'. If any of them was changed, new cache will be created
+          key: ${{ runner.os }}-providers-cache-${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_ORIGIN_PROVIDER)) }}
+          #key: ${{ runner.os }}-providers-${{ hashFiles('tf-origins/providers.tf') }}
 
       - name: Debug linux
         if: ${{ matrix.os != 'windows-latest' }}
@@ -138,7 +138,11 @@ jobs:
           export HASH_LOCK_FILE_PREVIOUS=${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}
           echo "HASH_LOCK_FILE_PREVIOUS: $HASH_LOCK_FILE_PREVIOUS"
           echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
-          #rm -r ${{ env.TF_PLUGIN_CACHE_DIR }}/*
+          echo "----------rm TF_PLUGIN_CACHE_DIR start------------"
+          ls la ${{ env.TF_PLUGIN_CACHE_DIR }}
+          rm -r ${{ env.TF_PLUGIN_CACHE_DIR }}/*
+          ls la ${{ env.TF_PLUGIN_CACHE_DIR }}
+          echo "----------rm TF_PLUGIN_CACHE_DIR end------------"
           echo "----------lock start------------"
           cat .terraform.lock.hcl
           echo "----------lock end------------"
