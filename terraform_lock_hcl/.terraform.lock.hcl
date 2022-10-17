@@ -22,4 +22,3 @@ provider "registry.terraform.io/hashicorp/aws" {
     "zh:ecdabb44b48addc8483bca7bd683614a347367ae950ca8b6a6880679f5c12abd",
   ]
 }
-#locked-providers-for-linux-darwin-windows-from-teg
