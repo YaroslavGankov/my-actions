@@ -43,6 +43,9 @@ jobs:
       - name: Make directory for Cache Providers
         run: |
           pwd
+          echo "hash1: ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/','hash1.hcl')) }}"
+          echo "hash2: ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/','hash2.hcl')) }}"
+          echo "hash3: ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/','hash3.hcl')) }}"          
           mkdir -p "$TF_PLUGIN_CACHE_DIR"
           ls -la "$TF_PLUGIN_CACHE_DIR"
           #mkdir -p "/Users/runner/.terraform.d/plugin-cache"
