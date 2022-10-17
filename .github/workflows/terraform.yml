@@ -165,7 +165,8 @@ jobs:
           echo "-----------------------------------"
         continue-on-error: true
 
-      - name: Check lock platform in ${{ env.TF_LOCK_FILE }}
+      - name: "TF Lock file. Check lock platform in ${{ env.TF_LOCK_FILE }}"
+        id: check_tf_providers_lock
         run: |
           if grep -q "${{ env.PHRASE_IN_LOCK_FILE }}" "${{ env.TF_LOCK_FILE }}"; then
               echo "Phrase is found"; \
@@ -177,6 +178,7 @@ jobs:
 
       #фиксируем провайдеры для различных платформ (в случае применения terraform init -upgrade нужно снова их фиксировать)
       - name: "Push file ${{ env.TF_LOCK_FILE }} back to repo"
+        if: ${{ steps.check_tf_providers_lock.outcome == 'success' }}
         run: |
           echo "-------------------------------------------"
           cat "${{ env.TF_LOCK_FILE }}"
