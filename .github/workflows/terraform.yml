@@ -68,6 +68,7 @@ jobs:
       - name: Calculate hash for file ${{ env.TF_LOCK_FILE }}
         run: |
           echo "HASH_LOCK_FILE_PREVIOUS_GH=${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}" >> "$GITHUB_ENV"
+          echo "PHRASE_IN_LOCK_FILE=#locked-providers-for-linux-darwin-windows-from-teg" >> "$GITHUB_ENV"
           
 
       - name: Debug cat .terraform.lock.hcl
@@ -82,13 +83,12 @@ jobs:
           echo "startuem"
           #export TEMP1=$(terraform init)
           terraform init
-          export "PHRASE_IN_LOCK_FILE"="#locked-providers-for-linux-darwin-windows-from-teg"
-          if grep -q "$PHRASE_IN_LOCK_FILE" "${{ env.TF_LOCK_FILE }}"; then
+          if grep -q "${{ env.PHRASE_IN_LOCK_FILE }}" "${{ env.TF_LOCK_FILE }}"; then
               echo "Phrase is found"; \
           else \
               echo "Start lock terraform providers:"; \
               terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64 && \
-              echo "$PHRASE_IN_LOCK_FILE" >> "${{ env.TF_LOCK_FILE }}" ; \
+              echo "${{ env.PHRASE_IN_LOCK_FILE }}" >> "${{ env.TF_LOCK_FILE }}" ; \
           fi
           #terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
           # echo "-----------------------"
@@ -136,13 +136,12 @@ jobs:
         id: init_upgrade
         run: |
           terraform init -upgrade
-          export PHRASE_IN_LOCK_FILE="#locked-providers-for-linux-darwin-windows-from-teg"
-          if grep -q "$PHRASE_IN_LOCK_FILE" "${{ env.TF_LOCK_FILE }}"; then
+          if grep -q "${{ env.PHRASE_IN_LOCK_FILE }}" "${{ env.TF_LOCK_FILE }}"; then
               echo "Phrase is finded"; \
           else \
               echo "Start lock terraform providers:"; \
               terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64 && \
-              echo "$PHRASE_IN_LOCK_FILE" >> "${{ env.TF_LOCK_FILE }}" ; \
+              echo "${{ env.PHRASE_IN_LOCK_FILE }}" >> "${{ env.TF_LOCK_FILE }}" ; \
           fi
 
 
