@@ -1,10 +1,6 @@
 # This file is maintained automatically by "terraform init".
 # Manual edits may be lost in future updates.
-#for tests
-#for tests
-#for tests
-#for tests
-#for tests
+
 provider "registry.terraform.io/hashicorp/aws" {
   version     = "4.30.0"
   constraints = "4.30.0"
@@ -26,3 +22,4 @@ provider "registry.terraform.io/hashicorp/aws" {
     "zh:ecdabb44b48addc8483bca7bd683614a347367ae950ca8b6a6880679f5c12abd",
   ]
 }
+#locked-providers-for-linux-darwin-windows-from-teg
