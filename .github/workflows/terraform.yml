@@ -152,6 +152,9 @@ jobs:
               terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64 && \
               echo "${{ env.PHRASE_IN_LOCK_FILE }}" >> "${{ env.TF_LOCK_FILE }}" ; \
           fi
+          echo "-------------------------------------------"
+          cat "${{ env.TF_LOCK_FILE }}"
+          echo "-------------------------------------------"
           # # читаем хэш исходного файла и отправляем коммит в случае, если старый и новый файлы отличаются
           export HASH_LOCK_FILE_CURRENT="${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}"
           echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
@@ -177,6 +180,8 @@ jobs:
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
           echo ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}
+          export HASH_LOCK_FILE_CURRENT="${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}"
+          echo "HASH_LOCK_FILE_CURRENT: $HASH_LOCK_FILE_CURRENT"
           echo "ls -la"
           ls -la
           echo "-----------------------------------"
