@@ -46,6 +46,11 @@ jobs:
           echo "hash1: ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/','hash1.hcl')) }}"
           echo "hash2: ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/','hash2.hcl')) }}"
           echo "hash3: ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/','hash3.hcl')) }}"          
+          echo "ololo-trololo" >> hash3.hcl
+          echo "------------------"
+          cat hash3.hcl
+          echo "------------------"
+          echo "hash3: ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/','hash3.hcl')) }}"
           mkdir -p "$TF_PLUGIN_CACHE_DIR"
           ls -la "$TF_PLUGIN_CACHE_DIR"
           #mkdir -p "/Users/runner/.terraform.d/plugin-cache"
@@ -141,10 +146,8 @@ jobs:
           echo "-----------------------------------"
         continue-on-error: true
 
-      #фиксируем провайдеры для различных платформ (в случае применения terraform init -upgrade нужно снова их фиксировать)
-      - name: "Push file ${{ env.TF_LOCK_FILE }} back to repo"
+      - name: Check lock platform in ${{ env.TF_LOCK_FILE }}
         run: |
-          
           if grep -q "${{ env.PHRASE_IN_LOCK_FILE }}" "${{ env.TF_LOCK_FILE }}"; then
               echo "Phrase is found"; \
           else \
@@ -152,6 +155,10 @@ jobs:
               terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64 && \
               echo "${{ env.PHRASE_IN_LOCK_FILE }}" >> "${{ env.TF_LOCK_FILE }}" ; \
           fi
+
+      #фиксируем провайдеры для различных платформ (в случае применения terraform init -upgrade нужно снова их фиксировать)
+      - name: "Push file ${{ env.TF_LOCK_FILE }} back to repo"
+        run: |
           echo "-------------------------------------------"
           cat "${{ env.TF_LOCK_FILE }}"
           echo "-------------------------------------------"
@@ -206,3 +213,4 @@ jobs:
       
       # - name: Terraform Destroy
       #   run: terraform destroy -auto-approve
+      
