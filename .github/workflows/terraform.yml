@@ -45,7 +45,10 @@ jobs:
           pwd
           echo "hash1: ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/','hash1.hcl')) }}"
           echo "hash2: ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/','hash2.hcl')) }}"
-          echo "hash3: ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/','hash3.hcl')) }}"          
+          echo "------------------"
+          cat hash3.hcl
+          echo "------------------"
+          echo "hash3: ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/','hash3.hcl')) }}"
           echo "ololo-trololo" >> hash3.hcl
           echo "------------------"
           cat hash3.hcl
@@ -54,6 +57,22 @@ jobs:
           mkdir -p "$TF_PLUGIN_CACHE_DIR"
           ls -la "$TF_PLUGIN_CACHE_DIR"
           #mkdir -p "/Users/runner/.terraform.d/plugin-cache"
+        continue-on-error: true
+      
+      - name: One more Debug for hash
+        run: |
+          pwd
+          echo "hash1: ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/','hash1.hcl')) }}"
+          echo "hash2: ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/','hash2.hcl')) }}"
+          echo "------------------"
+          cat hash3.hcl
+          echo "------------------"
+          echo "hash3: ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/','hash3.hcl')) }}"
+          # echo "ololo-trololo" >> hash3.hcl
+          # echo "------------------"
+          # cat hash3.hcl
+          # echo "------------------"
+          # echo "hash3: ${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/','hash3.hcl')) }}"
         continue-on-error: true
       
       # - name: Terraform Format
