@@ -166,10 +166,10 @@ jobs:
         continue-on-error: true
 
       - name: "TF Lock file. Check lock platform in ${{ env.TF_LOCK_FILE }}"
-        id: check_tf_providers_lock
+        id: tf_lock_file_lock_platforms
         run: |
           if grep -q "${{ env.PHRASE_IN_LOCK_FILE }}" "${{ env.TF_LOCK_FILE }}"; then
-              echo "Phrase is found"; \
+              echo "Phrase is found. Nothing to do"; \
           else \
               echo "Start lock terraform providers:"; \
               terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64 && \
@@ -178,7 +178,7 @@ jobs:
 
       #фиксируем провайдеры для различных платформ (в случае применения terraform init -upgrade нужно снова их фиксировать)
       - name: "Push file ${{ env.TF_LOCK_FILE }} back to repo"
-        if: ${{ steps.check_tf_providers_lock.outcome == 'success' }}
+        if: ${{ steps.tf_lock_file_lock_platforms.outcome == 'success' }}
         run: |
           echo "-------------------------------------------"
           cat "${{ env.TF_LOCK_FILE }}"
