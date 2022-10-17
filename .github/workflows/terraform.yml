@@ -83,17 +83,6 @@ jobs:
           echo "startuem"
           #export TEMP1=$(terraform init)
           terraform init
-          if grep -q "${{ env.PHRASE_IN_LOCK_FILE }}" "${{ env.TF_LOCK_FILE }}"; then
-              echo "Phrase is found"; \
-          else \
-              echo "Start lock terraform providers:"; \
-              terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64 && \
-              echo "${{ env.PHRASE_IN_LOCK_FILE }}" >> "${{ env.TF_LOCK_FILE }}" ; \
-          fi
-          #terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64
-          # echo "-----------------------"
-          # echo $TEMP1
-          # echo "-----------------------"
         continue-on-error: true
 
       # кешируем провайдеры
@@ -136,15 +125,7 @@ jobs:
         id: init_upgrade
         run: |
           terraform init -upgrade
-          if grep -q "${{ env.PHRASE_IN_LOCK_FILE }}" "${{ env.TF_LOCK_FILE }}"; then
-              echo "Phrase is finded"; \
-          else \
-              echo "Start lock terraform providers:"; \
-              terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64 && \
-              echo "${{ env.PHRASE_IN_LOCK_FILE }}" >> "${{ env.TF_LOCK_FILE }}" ; \
-          fi
-
-
+ 
       - name: Debug linux
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
@@ -159,12 +140,19 @@ jobs:
 
       #фиксируем провайдеры для различных платформ (в случае применения terraform init -upgrade нужно снова их фиксировать)
       - name: "Push file ${{ env.TF_LOCK_FILE }} back to repo"
-        if: ${{ steps.init_upgrade.outcome == 'success' || env.HASH_LOCK_FILE_PREVIOUS_GH == '' }}
         run: |
+          
+          if grep -q "${{ env.PHRASE_IN_LOCK_FILE }}" "${{ env.TF_LOCK_FILE }}"; then
+              echo "Phrase is found"; \
+          else \
+              echo "Start lock terraform providers:"; \
+              terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_amd64 && \
+              echo "${{ env.PHRASE_IN_LOCK_FILE }}" >> "${{ env.TF_LOCK_FILE }}" ; \
+          fi
           # # читаем хэш исходного файла и отправляем коммит в случае, если старый и новый файлы отличаются
           export HASH_LOCK_FILE_CURRENT="${{ hashFiles(format('{0}{1}{2}',env.WORKING_DIRECTORY,'/',env.TF_LOCK_FILE)) }}"
-          echo "${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
-          echo "$HASH_LOCK_FILE_CURRENT"
+          echo "HASH_LOCK_FILE_PREVIOUS_GH: ${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}"
+          echo "HASH_LOCK_FILE_CURRENT: $HASH_LOCK_FILE_CURRENT"
           if [[ "${{ env.HASH_LOCK_FILE_PREVIOUS_GH }}" != "$HASH_LOCK_FILE_CURRENT"  ]]; then \
             echo "start git actions:"; \
             echo "git config:"; \
