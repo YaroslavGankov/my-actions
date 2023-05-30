@@ -1,4 +1,4 @@
-#project for testing infracost
+#project for testing infracost#####
 
 #--------VARIABLES
 variable "temp_vpc_cidr_mask16" {
@@ -8,39 +8,20 @@ variable "temp_vpc_cidr_mask16" {
 
 variable "name_project" {
   description = "Name of project which be placed in all the resources"
-  default = "skiff3"
+  default = "test_terraform_lock_hcl"
 }
 
 #directive for remote-state-file storage for terraform (for non-module structure)
 terraform {
   backend "s3" {
     bucket="bucket-from-lambda-skiff"
-    key = "infracost_test/terraform.tfstate"
+    key = "terraform_lock_hcl/terraform.tfstate"
     region = "us-east-1"
   }
 }
 
 #--------MAIN
-provider "aws" {
-  default_tags {
-    tags = {
-      Learning = "Terraform"
-      Owner = "yaroslav.gankov"
-      Creator = "yaroslav.gankov"
-    }
-  }
-}
-
 module "create_skiff_VPC_and_subnets" {
-  # MODULE create_skiff_VPC_and_subnets:
-  # DESCRIPTION: Create VPC+subnets+IGateway+RouteTable
-  # OUTPUTS:
-  # vpc_id
-  # vpc_cidr
-  # public_subnet_ids
-  # internal_subnet_ids
-  # DB_subnet_ids
-  # vpc_cidr_mask16 - first two numbers of CIDR/16, example "10.171"
   source = "./layer1.Network" 
   count_subnets = 2 #number of public subnets in VPC with Internet Gateway
   count_subnets_internal = 2 #number of internal subnets in VPC with NAT
@@ -59,15 +40,15 @@ module "create_SG_public" {
 }
 
 # CREATE INSTANCES
-module "create_simple_public_instance" {
-  source = "./layer3.Servers"
-  number_of_servers = 10
-  file_for_user_data = "user_data1.sh"
-  subnet_ids = module.create_skiff_VPC_and_subnets.public_subnet_ids
-  sg_id = [module.create_SG_public.webserver_sg_id]
-  server_name = "${var.name_project}-public"
-  instance_type = "t3.small"
-}
+# module "create_simple_public_instance" {
+#   source = "./layer3.Servers"
+#   number_of_servers = 1
+#   file_for_user_data = "user_data1.sh"
+#   subnet_ids = module.create_skiff_VPC_and_subnets.public_subnet_ids
+#   sg_id = [module.create_SG_public.webserver_sg_id]
+#   server_name = "${var.name_project}-public"
+#   instance_type = "t3.small"
+# }
 # #internet by NAT
 # module "create_simple_private_instance" {
 #   source = "./layer3.Servers"
@@ -119,6 +100,6 @@ output "output_public_subnet_ids" {
   value = module.create_skiff_VPC_and_subnets.public_subnet_ids
 }
 
-output "id_servers" {
-  value = module.create_simple_public_instance.id_aws_instances
-}
+# output "id_servers" {
+#   value = module.create_simple_public_instance.id_aws_instances
+# }
