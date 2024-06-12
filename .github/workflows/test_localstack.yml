@@ -1,0 +1,71 @@
+#working version with 'pip install localstack'
+name: Localstack_Testing
+on:
+  # push:
+  #   branches: [ master, main ]
+  # pull_request:
+  #   branches: [ master, main ]
+  workflow_dispatch:
+  
+
+jobs:
+  build1:
+    name: "Test localstack"
+    runs-on: ubuntu-latest
+    env:
+      WORKING_DIRECTORY: tf-origins
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: true
+          terraform_version: 1.2.5
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      
+      - name: Fix pyOpenSSL version
+        run:  pip install --upgrade pyOpenSSL
+
+      # - name: localstack. Preparing to setup
+      #   run: |
+      #     echo 'echo $PATH:'
+      #     echo $PATH
+      #     echo "install pip:"
+      #     sudo apt install pip
+      #   continue-on-error: true
+
+      - name: localstack. Setup
+        run: |
+          echo "install localstack"
+          pip install localstack
+          pip install terraform-local
+
+      - name: localstack. Start
+        run: localstack start -d
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check -diff
+        continue-on-error: true
+
+      - name: tflocal Init
+        id: init
+        run: tflocal init
+
+      - name: tflocal Plan
+        id: plan
+        run: tflocal plan -no-color -input=false
+
+      - name: tflocal Apply
+        run: tflocal apply -auto-approve

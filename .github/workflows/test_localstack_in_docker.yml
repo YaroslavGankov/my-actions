@@ -1,0 +1,92 @@
+###
+name: Localstack_Testing_Docker
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  
+jobs:
+  build1:
+    name: "Test localstack in Docker"
+    runs-on: ubuntu-latest
+    env:
+      WORKING_DIRECTORY: tf-origins
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      # AWS_ACCESS_KEY_ID: test
+      # AWS_SECRET_ACCESS_KEY: test
+      PIP_REQUIREMENTS_FILE: requirements.txt
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+    services:
+      localstack_service:
+        image: localstack/localstack
+        ports:
+          - 4566:4566
+          - 4510-4559:4510-4559
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+      - run: pip install -r "${GITHUB_WORKSPACE}/${PIP_REQUIREMENTS_FILE}"
+
+      - name: debug telnet & awslocal
+        run: |
+          awslocal --version
+          telnet localhost 4566
+        continue-on-error: true
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: true
+          terraform_version: 1.2.5
+
+      # - name: Configure AWS Credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      
+      # - name: Fix pyOpenSSL version
+      #   run:  pip install --upgrade pyOpenSSL
+
+      # - name: localstack. Preparing to setup
+      #   run: |
+      #     echo 'echo $PATH:'
+      #     echo $PATH
+      #     echo "install pip:"
+      #     sudo apt install pip
+      #   continue-on-error: true
+
+      # - name: tflocal. Setup
+      #   run: |
+      #     pip install terraform-local
+
+      # - name: localstack. Start
+      #   run: docker run -p 4566:4566 -p 4510-4559:4510-4559 -d localstack/localstack
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check -diff
+        continue-on-error: true
+
+      - name: terraform Init
+        id: init
+        run: terraform init
+
+      - name: terraform Plan
+        id: plan
+        run: tflocal plan -no-color -input=false
+
+      - name: tflocal Apply
+        run: tflocal apply -auto-approve
