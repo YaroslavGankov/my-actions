@@ -28,7 +28,7 @@ jobs:
           temp1="Automated commit: alala.txt ($(date +%Y%m%d_%H%M%S))"; \
           git add alala.txt
           git log
-          git commit -m "$temp1"; \
-          git log
           git fetch origin
+          git commit -m "$temp1"; \
+          git log          
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
