@@ -26,8 +26,9 @@ jobs:
           git config --global user.name "AutoCommit.txt[bot]"; \
           git config --global user.email "autocommit.txt[bot]@users.noreply.github.com"; \
           temp1="Automated commit: alala.txt ($(date +%Y%m%d_%H%M%S))"; \
+          git add alala.txt
           git log
-          git commit -ma "$temp1"; \
+          git commit -m "$temp1"; \
           git log
           git fetch origin
           git rebase --strategy-option=theirs origin/${{ github.event.pull_request.head.ref }}
