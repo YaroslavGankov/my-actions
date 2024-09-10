@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Check out repo 📚
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
       - name: First push step
         id: first
         run: |
@@ -30,4 +32,4 @@ jobs:
           git log
           git commit -m "$temp1"; \
           git log          
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          git push
