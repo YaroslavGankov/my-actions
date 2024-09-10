@@ -29,4 +29,6 @@ jobs:
           git log
           git commit -ma "$temp1"; \
           git log
+          git fetch origin
+          git rebase --strategy-option=theirs origin/${{ github.event.pull_request.head.ref }}
           git push origin HEAD:${{ github.event.pull_request.head.ref }}; \
