@@ -1,0 +1,35 @@
+name: Push-back
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  define-matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo 📚
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: First push step
+        id: first
+        run: |
+          echo "---1"
+          git branch --show-current
+          echo "---2"
+          echo "${{ github.event.pull_request.head.ref }}"
+          echo "---3"
+          echo "ololo2" > alala.txt
+          git config --global user.name "AutoCommit.txt[bot]"; \
+          git config --global user.email "autocommit.txt[bot]@users.noreply.github.com"; \
+          temp1="Automated commit: alala.txt ($(date +%Y%m%d_%H%M%S))"; \
+          git add alala.txt
+          git log
+          git commit -m "$temp1"; \
+          git log          
+          git push
